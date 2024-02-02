@@ -1,0 +1,770 @@
+---
+title: "Week_2_Problem_Set"
+author: "Daniel Crownover"
+date: "2022-12-06"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+
+```{r chunk_name1, echo=FALSE, warning=FALSE, fig.show='only', include=FALSE}
+
+## read in packages
+library(dplyr)
+library(readxl)
+library(coin)
+library(lawstat)
+library(ggpubr)
+library(rstatix)
+library(ggplot2) #a data visualiztion package
+library(ggthemes) #a package of themes for visualizations. themes are settings to make are visualizations consistent and attractive
+library(RColorBrewer) # I like color, RColorBrewer is a package of colors and color combinations.
+library(moments) #allows us to calculate skewness and kurtosis
+library(kableExtra) #this is for making data tables in R
+```
+
+Background: 
+In this Problem Set, you will use R to conduct comparison of means tests (both parametric and non-parametric) to examine water quality in drinking wells in a fracking region of northeastern Pennsylvania. Please turn in both a write up (around two single-spaced pages of text (not including figures)) and .rmd file of your code. The write up must be submitted as a PDF that was knitted from your Rmd. Use tables to report your results in a clear and structured manner.you need to use In Line R coding to discuss your results. Your report (PDF) should not contain any R code or error messages. You will also need to submit ONE .Rmd file that contains all the code that you executed in RStudio (aka turn in a knitted version of the document and non-knitted version).
+
+In this problem set, we will analyze water quality data from a study conducted by Molofsky et al. (2013) that examined methane levels in 1,701 drinking wells in Susquehanna County, Pennsylvania. Through our analysis we will seek to determine whether methane levels in drinking water are greater in water wells near fracking sites than in water wells farther away from these sites. The authors grouped the wells into two categories: (1) drinking wells within 1 km radius of a fracking site, and (2) wells located outside a 1km radius of a fracking site. The drinking water wells are also classified as either in a valley or in an upland area (see Molofsky et al., 2013). Prior to completing the problem set, please read with Molofsky article.
+
+The goal: To make inferences about methane concentrations across fracking group by conducting the following comparisons:
+(1) Methane levels near fracking sites vs. Methane levels far from fracking sites for ALL observations
+(2) Methane levels near fracking sites vs. Methane levels far from fracking sites for valley observations--- only filter
+(3) Methane levels near fracking sites vs. Methane levels far from fracking sites for upland observations-- only filter
+(4) Methane levels in the valley vs. Methane levels in the upland
+
+
+
+
+
+
+KEY:
+- Number inside parentheses (#) corresponds to one of the comparison groups (1, 2, 3, or 4).
+
+
+### Appendix:
+- Figure 1.1: Download the Water Quality Data
+- 2.0.0: Parametric t-test and Preliminary Test
+- 2.1.0 (1)
+- Figure 2.1.1: Create a Box Plot (1)
+- Figure 2.1.2: 2.1 Identify Outliers by Groups (1)
+- Figure 2.1.3: 2.1 Check Normality by Groups (1) 
+- Figure 2.1.4: 2.1 Summary Statistics ~ Mean and Interquartile Range ~ (1)
+- Figure 2.1.5: 2.1 Summary Statistics ~ Mean Methane and Median Methane ~ (1)
+- Figure 2.1.6: 2.1 Levine Test (1)
+- Figure 2.1.7: 2.1 Parametric t-test (1)
+- Figure 2.1.8: 2.1 Cohens D test (1)
+- Figure 2.1.9: 2.1 Report Results (1)
+- 2.2.0 (2)
+- Figure 2.2.1: 2.2 Create a Box Plot (2)
+- Figure 2.2.2: 2.2 Identify Outliers by Groups (2)
+- Figure 2.2.3: 2.2 Check Normality by Groups (2) 
+- Figure 2.2.4: 2.2 Summary Statistics ~ Mean and Interquartile Range ~ (2)
+- Figure 2.2.5: 2.2 Summary Statistics ~ Mean Methane and Median Methane ~ (2)
+- Figure 2.2.6: 2.2 Levine Test (2)
+- Figure 2.2.7: 2.2 Parametric t-test (2)
+- Figure 2.2.8: 2.2 Cohens D test (2)
+- Figure 2.2.9: 2.2 Report Results (2)
+- 2.3.0 (3)
+- Figure 2.3.1: 2.3 Create a Box Plot (3)
+- Figure 2.3.2: 2.3 Identify Outliers by Groups (3)
+- Figure 2.3.3: 2.3 Check Normality by Groups (3) 
+- Figure 2.3.4: 2.3 Levine test (3)
+- Figure 2.3.5: 2.3 Summary Statistics ~ Mean and Interquartile Range ~ (3)
+- Figure 2.3.6: 2.3 Summary Statistics ~ Mean Methane and Median Methane ~ (3)
+- Figure 2.3.7: 2.3 Parametric t-test (3)
+- Figure 2.3.8: 2.3 Cohens D test (3)
+- Figure 2.3.9: 2.3 Report Results (3)
+- 2.4.0
+- Figure 2.4.1: 2.4 Create a Box Plot (4)
+- Figure 2.4.2: 2.4 Identify Outliers by Groups (4)
+- Figure 2.4.3: 2.4 Check Normality by Groups (4) 
+- Figure 2.4.4: 2.4 Summary Statistics ~ Mean and Interquartile Range ~ (4)
+- Figure 2.4.5: 2.4 Summary Statistics ~ Mean Methane and Median Methane ~ (4)
+- Figure 2.4.6: 2.4 Levine test (4)
+- Figure 2.4.7: 2.4 Parametric t-test (4)
+- Figure 2.4.8: 2.4 Cohens D test (4)
+- Figure 2.4.9: 2.4 Report Results (4)
+- 3.0.0: Non-Parametric t-test and Preliminary test
+- 3.1.0
+- Figure 3.1.1: 3.1 Compute the Wilcox test (1)
+- Figure 3.1.2: 3.1 Calculate Effect Size (1)
+- Figure 3.2.1: 3.2 Compute the Wilcox test (2)
+- Figure 3.2.2: 3.2 Calculate Effect Size (2)
+- Figure 3.3.1: 3.3 Compute the Wilcox test (3)
+- Figure 3.3.2: 3.3 Calculate Effect Size (3)
+- Figure 3.4.1: 3.4 Compute the Wilcox test (4)
+- Figure 3.4.2: 3.4 Calculate Effect Size (4)
+- 4.0.0: Log Transformations and t-test
+- Figure 4.1.1: 4.1 Log Transforming Data (1) 
+- Figure 4.1.2: 4.1 Histogram of Logged Data (1)
+- Figure 4.1.3: 4.1 Levine test (1)
+- Figure 4.1.4: 4.1 Shapiro and Normality Test on Log Value (1)
+- Figure 4.2.1: 4.2 Log Transforming Data (2) 
+- Figure 4.2.2: 4.2 Histogram of Logged Data (2)
+- Figure 4.2.3: 4.2 Levine test (2)
+- Figure 4.2.4: 4.2 Shapiro and Normality Test on Log Value (2)
+- Figure 4.3.1: 4.3 Log Transforming Data (3) 
+- Figure 4.3.2: 4.3 Histogram of Logged Data (3)
+- Figure 4.3.3: 4.3 Levine test (3)
+- Figure 4.3.4: 4.3 Shapiro and Normality Test on Log Value (3)
+- Figure 4.4.1: 4.4 Log Transforming Data (4) 
+- Figure 4.4.2: 4.4 Histogram of Logged Data (4)
+- Figure 4.4.3: 4.4 Levine test (4)
+- Figure 4.4.4: 4.4 Shapiro and Normality Test on Log Value (4)
+
+
+
+
+------
+
+
+
+###### Figure 1.1: Download the Water Quality Data
+```{r chunk_name2, echo=FALSE, warning=FALSE, fig.show='only'}
+ PAFracking <- read.csv("/Users/daniel/Downloads/BIO 591 Coding Files/Problem Set/problem set 2/psdata2/PAFracking.csv")
+
+
+## displaying the first head?
+head(PAFracking)
+
+##str displays string of data
+##str(PAFracking)
+
+```
+###### 2.0.0: Parametric t-test and Preliminary Test
+
+---------------- 
+
+###### 2.1.0 (1)
+
+
+
+##### Figure 2.1.1: 2.1 Create a Box Plot (1)
+```{r chunk_name3, echo=FALSE, warning=FALSE, fig.show='only'}
+
+## creating a box plot
+
+library(ggpubr)
+bxp1 <- ggboxplot(
+  PAFracking, x = "proximity", y = "methane", width = 0.5, add = c("mean", "jitter"), 
+  ylab = "methane (g)", xlab = "Proximity"
+  )
+bxp1
+
+```
+
+###### Figure 2.1.2: 2.1 Identify Outliers by Groups (1)
+``` {r chunk_name4, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking %>%
+  group_by(proximity) %>%
+  identify_outliers(methane)
+```
+###### Figure 2.1.3: 2.1 Check Normality by Groups (1) 
+```{r chunk_name5, echo=FALSE, warning=FALSE, fig.show='only'}
+## pick 123 of what --> bsb_df2 variables -->grouping ---> shapiro test
+set.seed(123)
+PAFracking %>%
+  group_by(proximity) %>%
+  shapiro_test(methane)
+
+
+# Draw a qq plot by group
+## this is showing that it is not normilly distributed
+ggqqplot(PAFracking, x = "methane", facet.by = "proximity") 
+
+
+```
+###### Figure 2.1.4: 2.1 Summary Statistics ~ Mean and Interquartile Range ~ (1)
+```{r chunk_name6, echo=FALSE, warning=FALSE, fig.show='only'}
+library(tidyverse)
+PAFracking %>% get_summary_stats(methane, type = c("mean_sd"))
+PAFracking %>% get_summary_stats(methane, type = "median_iqr")
+
+
+```
+###### Figure 2.1.5: 2.1 Summary Statistics ~ Mean Methane and Median Methane ~ (1)
+```{r chunk_name7, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking %>% 
+  group_by(proximity) %>% 
+  summarize(`Mean Methane` = round(mean(methane), 2), 
+            `Median Methane` = round(median(methane), 2)) %>% 
+  ungroup %>% 
+rename("Proximity of All" = proximity) %>%  # Rename the column
+  kbl() %>% 
+  kable_styling()
+```
+###### Figure 2.1.6: 2.1 Levine Test (1)
+```{r chunk_name8, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+
+PAFracking %>% levene_test(methane ~ proximity)
+
+```
+###### Figure 2.1.7: 2.1 Parametric t-test(1)
+```{r chunk_name9, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking <- na.omit(PAFracking)
+
+stat.test1 <- PAFracking  %>% 
+  t_test(methane ~ proximity, detailed = T) %>%
+  add_significance()
+
+stat.test1
+
+```
+###### Figure 2.1.8: 2.1 Cohens D test (1)
+```{r chunk_name10, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking %>%  cohens_d(methane ~ proximity, var.equal = FALSE)
+```
+###### Figure 2.1.9: 2.1 Report Results (1)
+```{r chunk_name11, echo=FALSE, warning=FALSE, fig.show='only'}
+library(ggplot2)
+stat.test1 <- stat.test1 %>% add_xy_position(x = "group")
+bxp1 + 
+  stat_pvalue_manual(stat.test1, tip.length = 0) +
+  labs(subtitle = get_test_label(stat.test1, detailed = TRUE))
+```
+
+-----------------------------------------------
+
+### 2.2.0 (2)
+
+------------------------------------------------
+
+###### Figure 2.2.1: 2.2 Create a Box Plot (2)
+```{r chunk_name12, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_valley <- PAFracking %>% filter(location == "Valley") 
+
+## creating a box plot
+
+bxp2 <- ggboxplot(
+  PAFracking_valley, x = "proximity", y = "methane", add = "jitter", 
+  ylab = "methane (g)", xlab = "Proximity"
+  )
+bxp2
+
+```
+
+###### Figure 2.2.2: 2.2 Identify Outliers by Groups (2)
+``` {r chunk_name13, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_valley <- PAFracking %>% filter(location == "Valley")  %>% 
+  
+
+  group_by(proximity) %>%
+  identify_outliers(methane)
+
+
+PAFracking_valley
+```
+###### Figure 2.2.3: 2.2 Check Normality by Groups (2) 
+```{r chunk_name14, echo=FALSE, warning=FALSE, fig.show='only'}
+
+## pick 123 of what --> PAFracking_valley variables -->grouping ---> shapiro test
+set.seed(123)
+PAFracking_valley %>%
+  group_by(location) %>%
+  shapiro_test(methane)
+
+## the null of the shapiro test is a normal dist, we obtained low pvalue and we are rejecting the null
+
+# Draw a qq plot by group
+## this is showing that it is not normilly distributed
+ggqqplot(PAFracking_valley, x = "methane", facet.by = "location") 
+
+
+```
+###### Figure 2.2.4: 2.2 Summary Statistics ~ Mean and Interquartile Range ~ (2)
+```{r chunk_name15, echo=FALSE, warning=FALSE, fig.show='only'}
+library(tidyverse)
+PAFracking_valley %>% get_summary_stats(methane, type = c("mean_sd"))
+PAFracking_valley %>% get_summary_stats(methane, type = "median_iqr")
+
+
+```
+###### Figure 2.2.5:  2.2 Summary Statistics ~ Mean Methane and Median Methane ~ (2)
+```{r chunk_name16, echo=FALSE, warning=FALSE, fig.show='only', results='asis'}
+
+PAFracking_valley %>% 
+  group_by(proximity) %>% 
+  summarize(`Mean Methane` = round(mean(methane), 2), 
+            `Median Methane` = round(median(methane), 2)) %>% 
+  ungroup %>% 
+rename("Proximity in the Valley" = proximity) %>%  # Rename the column
+  kbl() %>% 
+  kable_styling()
+
+
+
+## PAFracking %>%: This takes the PAFracking dataset and pipes it (%>%) into the next operation
+## filter(location == "Valley") %>%: This filters the dataset to include only rows where the value of the location variable is equal to "Valley".
+## group_by(proximity) %>%: This groups the filtered dataset by the proximity variable, which indicates the proximity to fracking sites.
+## summarize(Mean Methane= round(mean(methane), 2),Median Methane = round(median(methane), 2)) %>%: Within each group (determined by proximity to fracking 
+## the round() function rounds the values to two decimal places  
+## summarize(Mean Methane= round(mean(methane), 2),Median Methane = round(median(methane), 2)) %>%: Within each group (determined by proximity to fracking 
+## the round() function rounds the values to two decimal places  
+  ## "ungroup %>%:" This removes the grouping structure, ensuring that subsequent operations are applied to the dataset as a whole.
+  ## ungroup %>%: This removes the grouping structure, ensuring that subsequent operations are applied to the dataset as a whole.
+## 'kable_styling() function from the kableExtra package, making it visually more appealing.
+ 
+
+```
+###### Figure 2.2.6: 2.2 Levine Test (2)
+```{r chunk_name18, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+PAFracking_valley %>% levene_test(methane ~ proximity)
+
+```
+###### Figure 2.2.7: 2.2 Parametric t-test (2)
+```{r chunk_name19, echo=FALSE, warning=FALSE, fig.show='only'}
+
+stat.test2 <- PAFracking_valley  %>% 
+  t_test(methane ~ proximity, detailed = T) %>%
+  add_significance()
+
+stat.test2
+
+```
+###### Figure 2.2.8:  2.2 Cohens D test (2)
+```{r chunk_name20, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_valley %>%  cohens_d(methane ~ proximity, var.equal = FALSE)
+```
+###### Figure 2.2.9: 2.2 Report Results (2)
+```{r chunk_name21, echo=FALSE, warning=FALSE, fig.show='only'}
+library(ggplot2)
+stat.test2 <- stat.test2 %>% add_xy_position(x = "group")
+bxp2 + 
+  stat_pvalue_manual(stat.test2, tip.length = 0) +
+  labs(subtitle = get_test_label(stat.test2, detailed = TRUE))
+
+```
+--------------
+
+
+
+## 2.3.0 (3)
+
+
+--------------
+
+###### Figure 2.3.1: 2.3 Create a Box Plot (3)
+```{r chunk_name22, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_upland <- PAFracking %>% filter(location == "Upland")
+
+## creating a box plot
+
+bxp3 <- ggboxplot(
+  PAFracking_upland, x = "proximity", y = "methane", add = "jitter", 
+  ylab = "methane (g)", xlab = "Proximity"
+  )
+
+bxp3
+
+```
+###### Figure 2.3.2: 2.3 Identify Outliers by Groups (3)
+``` {r chunk_name23, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_upland <- PAFracking %>% filter(location == "Upland")  %>% 
+  
+
+  group_by(proximity) %>%
+  identify_outliers(methane)
+
+
+PAFracking_upland
+```
+###### Figure 2.3.3 2.3 Check Normality by Groups (3) 
+```{r chunk_name25, echo=FALSE, warning=FALSE, fig.show='only'}
+
+## pick 123 of what --> PAFracking_valley variables -->grouping ---> shapiro test
+set.seed(123)
+PAFracking_upland %>%
+  group_by(location) %>%
+  shapiro_test(methane)
+
+## the null of the shapiro test is a normal dist, we obtained low pvalue and we are rejecting the null
+
+# Draw a qq plot by group
+## this is showing that it is not normilly distributed
+ggqqplot(PAFracking_upland, x = "methane", facet.by = "location") 
+
+
+```
+###### Figure 2.3.4: 2.3 Levine test (3)
+```{r chunk_name24, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+
+PAFracking_upland %>% levene_test(methane ~ proximity)
+
+```
+###### Figure 2.3.5: 2.3 Summary Statistics ~ Mean and Interquartile Range ~ (3)
+```{r chunk_name26, echo=FALSE, warning=FALSE, fig.show='only'}
+library(tidyverse)
+PAFracking_upland %>% get_summary_stats(methane, type = c("mean_sd"))
+PAFracking_upland %>% get_summary_stats(methane, type = "median_iqr")
+
+
+```
+###### Figure 2.3.6: 2.3 Summary Statistics ~ Mean Methane and Median Methane ~ (3)
+```{r chunk_name27, echo=FALSE, warning=FALSE, fig.show='only', results='asis'}
+
+PAFracking_upland %>% 
+  group_by(proximity) %>% 
+  summarize(`Mean Methane` = round(mean(methane), 2), 
+            `Median Methane` = round(median(methane), 2)) %>% 
+  ungroup %>% 
+rename("Proximity in the Upland" = proximity) %>%  # Rename the column
+  kbl() %>% 
+  kable_styling()
+
+
+
+## PAFracking %>%: This takes the PAFracking dataset and pipes it (%>%) into the next operation
+## filter(location == "Valley") %>%: This filters the dataset to include only rows where the value of the location variable is equal to "Valley".
+## group_by(proximity) %>%: This groups the filtered dataset by the proximity variable, which indicates the proximity to fracking sites.
+## summarize(Mean Methane= round(mean(methane), 2),Median Methane = round(median(methane), 2)) %>%: Within each group (determined by proximity to fracking 
+## the round() function rounds the values to two decimal places  
+## summarize(Mean Methane= round(mean(methane), 2),Median Methane = round(median(methane), 2)) %>%: Within each group (determined by proximity to fracking 
+## the round() function rounds the values to two decimal places  
+  ## "ungroup %>%:" This removes the grouping structure, ensuring that subsequent operations are applied to the dataset as a whole.
+  ## ungroup %>%: This removes the grouping structure, ensuring that subsequent operations are applied to the dataset as a whole.
+## 'kable_styling() function from the kableExtra package, making it visually more appealing.
+ 
+
+```
+###### Figure 2.3.7: 2.3 Parametric t-test (3)
+```{r chunk_name28, echo=FALSE, warning=FALSE, fig.show='only'}
+
+
+stat.test3 <- PAFracking_upland  %>% 
+  t_test(methane ~ proximity, detailed = T) %>%
+  add_significance()
+
+stat.test3
+
+```
+###### Figure 2.3.8: 2.3 Cohens D test (3)
+```{r chunk_name29, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_upland %>%  cohens_d(methane ~ proximity, var.equal = FALSE)
+```
+
+###### Figure 2.3.9: 2.3 Report Results (3)
+```{r chunk_name30, echo=FALSE, warning=FALSE, fig.show='only'}
+library(ggplot2)
+stat.test3 <- stat.test3 %>% add_xy_position(x = "group")
+bxp3 + 
+  stat_pvalue_manual(stat.test3, tip.length = 0) +
+  labs(subtitle = get_test_label(stat.test3, detailed = TRUE))
+
+```
+
+------
+
+## 2.4.0
+
+------
+
+
+###### Figure 2.4.1: 2.4 Create a Box Plot (4)
+```{r chunk_name31, echo=FALSE, warning=FALSE, fig.show='only'}
+
+PAFracking_location <- PAFracking  %>% 
+  
+
+  group_by(location)
+
+
+## creating a box plot
+
+bxp4 <- ggboxplot(
+  PAFracking_location, x = "location", y = "methane", add = "jitter", 
+  ylab = "methane (g)", xlab = "location"
+  )
+
+bxp4
+
+```
+
+###### Figure 2.4.2: 2.4 Identify Outliers by Groups (4)
+``` {r chunk_name32, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_location <- PAFracking  %>% 
+  
+
+  group_by(location) %>%
+  identify_outliers(methane)
+
+
+PAFracking_location
+```
+###### Figure 2.4.3: 2.4 Check Normality by Groups (4) 
+```{r chunk_name33, echo=FALSE, warning=FALSE, fig.show='only'}
+## pick 123 of what --> paffracking variables -->grouping ---> shapiro test
+set.seed(123)
+PAFracking_location %>%
+  group_by(location) %>%
+  shapiro_test(methane)
+
+
+# Draw a qq plot by group
+## this is showing that it is not normilly distributed
+ggqqplot(PAFracking_location, x = "methane", facet.by = "location") 
+
+
+```
+###### Figure 2.4.4: 2.4 Summary Statistics ~ Mean and Interquartile Range ~ (4)
+```{r chunk_name34, echo=FALSE, warning=FALSE, fig.show='only'}
+library(tidyverse)
+PAFracking_location %>% get_summary_stats(methane, type = c("mean_sd"))
+PAFracking_location %>% get_summary_stats(methane, type = "median_iqr")
+
+
+```
+###### Figure 2.4.5: 2.4 Summary Statistics ~ Mean Methane and Median Methane ~ (4)
+```{r chunk_name35, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_location %>% 
+  group_by(location) %>% 
+  summarize(`Mean Methane` = round(mean(methane), 2), 
+            `Median Methane` = round(median(methane), 2)) %>% 
+  ungroup %>% 
+rename("Location" = location) %>%  # Rename the column
+  kbl() %>% 
+  kable_styling()
+
+```
+###### Figure 2.4.6: 2.4 Levine test (4)
+```{r chunk_name36, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+
+PAFracking_location %>% levene_test(methane ~ proximity)
+
+```
+###### Figure 2.4.7: 2.4 Parametric t-test (4)
+```{r chunk_name37, echo=FALSE, warning=FALSE, fig.show='only'}
+
+
+stat.test4 <- PAFracking_location  %>% 
+  t_test(methane ~ proximity, detailed = T) %>%
+  add_significance()
+
+stat.test4
+
+```
+###### Figure 2.4.8: 2.4 Cohens D test (4)
+```{r chunk_name38, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_location %>%  cohens_d(methane ~ proximity, var.equal = FALSE)
+```
+###### Figure 2.4.8: 2.4 Report Results (4)
+```{r chunk_name, echo=FALSE, warning=FALSE, fig.show='only'}
+library(ggplot2)
+stat.test4 <- stat.test4 %>% add_xy_position(x = "group")
+bxp4 + 
+  stat_pvalue_manual(stat.test4, tip.length = 0) +
+  labs(subtitle = get_test_label(stat.test4, detailed = TRUE))
+
+```
+
+-------
+## 3.0.0: 3.0.0: Non-Parametric t-test and Preliminary test
+------
+
+###### Figure 3.1.1: 3.1 Compute the Wilcox test (1)
+```{r chunk_name39, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+stat.test <- PAFracking %>% 
+  wilcox_test(methane ~ proximity) %>%
+  add_significance()
+stat.test
+```
+###### Figure 3.1.2:  3.1 Calculate Effect Size (1) 
+```{r chunk_name40, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking %>% wilcox_effsize(methane ~ proximity)
+
+```
+###### Figure 3.2.1: 3.2 Compute the Wilcox test (2)
+```{r chunk_name41, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+stat.test <- PAFracking_valley %>% 
+  wilcox_test(methane ~ proximity) %>%
+  add_significance()
+stat.test
+```
+###### Figure 3.2.2: 3.2 Calculate Effect Size (2) 
+```{r chunk_name42, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_valley %>% wilcox_effsize(methane ~ proximity)
+
+```
+###### Figure 3.3.1: 3.3 Compute the Wilcox test (3)
+```{r chunk_name43, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+stat.test <- PAFracking_upland %>% 
+  wilcox_test(methane ~ proximity) %>%
+  add_significance()
+stat.test
+```
+###### Figure 3.3.2: 3.3 Calculate Effect Size (3) 
+```{r chunk_name44, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_upland %>% wilcox_effsize(methane ~ proximity)
+
+```
+###### Figure 3.4.1: 3.4 Compute the Wilcox test (4)
+```{r chunk_name45, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+stat.test <- PAFracking_location %>% 
+  wilcox_test(methane ~ proximity) %>%
+  add_significance()
+stat.test
+```
+### Figure 3.4.2:  3.4 Calculate Effect Size (4) 
+```{r chunk_name46, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_location %>% wilcox_effsize(methane ~ proximity)
+
+```
+
+
+--------
+## 4.0.0: Log Transformations and t-test
+--------
+
+
+###### Figure 4.1.1: 4.1 Log Transforming Data (1) 
+```{r chunk_name47, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking$log.methane1<-log(PAFracking$methane)
+
+```
+###### Figure 4.1.2: 4.1 Histogram of Logged Data (1)
+```{r chunk_name48, echo=FALSE, warning=FALSE, fig.show='only'}
+library(ggplot2)
+
+plot_1 <-ggplot(PAFracking, aes(x=log.methane1))+
+geom_histogram(col="black") + facet_wrap(~proximity)+
+scale_fill_manual(values=c("royalblue", "gray"))
+plot_1
+
+
+plot_1 + facet_grid(scales = "free") +
+labs(x = "Proximity to Methane, log(ppm)", 
+     title = "Ground Water Proximity to Methane")
+
+```
+###### Figure 4.1.3: 4.1 Levine test (1)
+```{r chunk_name49, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+
+PAFracking %>% levene_test(log.methane1 ~ proximity)
+
+```
+###### Figure 4.1.4: 4.1 Shapiro and Normality Test on Log Value (1)
+```{r chunk_name50, echo=FALSE, warning=FALSE, fig.show='only'}
+set.seed(123)
+PAFracking %>%
+  group_by(proximity) %>%
+  shapiro_test(log.methane1)
+```
+
+###### Figure 4.2.1: 4.2 Log Transforming Data (2) 
+```{r chunk_name51, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_valley$log.methane2<-log(PAFracking_valley$methane)
+
+```
+###### Figure 4.2.2: 4.2 Histogram of Logged Data (2)
+```{r chunk_name52, echo=FALSE, warning=FALSE, fig.show='only'}
+
+library(ggplot2)
+
+p<-ggplot(PAFracking_valley, aes(x=log.methane2))+
+geom_histogram(col="black") + facet_wrap(~proximity)+
+scale_fill_manual(values=c("royalblue", "gray"))
+p
+
+
+p + facet_grid(scales = "free") +
+labs(x = "Proximity to Methane, log(ppm)", 
+     title = "Valley Ground Water Proximity to Methane")
+
+```
+
+###### Figure 4.2.3: 4.2 Levine test (2)
+```{r chunk_name53, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+
+PAFracking_valley %>% levene_test(log.methane2 ~ proximity)
+
+```  
+
+###### Figure 4.2.4:  4.2 Shapiro and Normality Test on Log Value (2)
+```{r chunk_name54, echo=FALSE, warning=FALSE, fig.show='only'}
+set.seed(123)
+PAFracking_valley %>%
+  group_by(proximity) %>%
+  shapiro_test(log.methane2)
+```
+###### Figure 4.3.1:  4.3 log transforming data for Valley (2) 
+```{r chunk_name55, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_upland$log.methane3<-log(PAFracking_upland$methane)
+
+```
+######  Figure 4.3.2:  4.3 Histogram of logged data for Valley (3)
+```{r chunk_name56, echo=FALSE, warning=FALSE, fig.show='only'}
+
+library(ggplot2)
+
+p<-ggplot(PAFracking_upland, aes(x=log.methane3))+
+geom_histogram(col="black") + facet_wrap(~proximity)+
+scale_fill_manual(values=c("royalblue", "gray"))
+p
+
+
+p + facet_grid(scales = "free") +
+labs(x = "Proximity to Methane, log(ppm)", 
+     title = "Valley Ground Water Proximity to Methane")
+
+```
+###### Figure 4.3.3:  4.3 Levine test (3)
+```{r chunk_name57, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+
+PAFracking_upland %>% levene_test(log.methane3 ~ proximity)
+
+```  
+###### Figure 4.3.4: 4.2 Shapiro and Normality Test on Log Value (3)
+```{r chunk_name58, echo=FALSE, warning=FALSE, fig.show='only'}
+set.seed(123)
+PAFracking_upland %>%
+  group_by(proximity) %>%
+  shapiro_test(log.methane3)
+```
+###### Figure 4.4.1:  4.4 log transforming data for Valley (4) 
+```{r chunk_name59, echo=FALSE, warning=FALSE, fig.show='only'}
+PAFracking_location$log.methane4<-log(PAFracking_location$methane)
+
+```
+###### Figure 4.4.2: 4.4 Histogram of logged data for Valley (4)
+```{r chunk_name60, echo=FALSE, warning=FALSE, fig.show='only'}
+
+library(ggplot2)
+
+plot4<-ggplot(PAFracking_location, aes(x=log.methane4))+
+geom_histogram(col="black") + facet_wrap(~proximity)+
+scale_fill_manual(values=c("royalblue", "gray"))
+plot4
+
+
+plot4 + facet_grid(scales = "free") +
+labs(x = "Proximity to Methane, log(ppm)", 
+     title = "Valley Ground Water Proximity to Methane")
+
+```
+###### Figure 4.4.3: 4.4 Levine test (4)
+```{r chunk_name61, echo=FALSE, warning=FALSE, fig.show='only'}
+library(rstatix)
+
+PAFracking_location %>% levene_test(log.methane4 ~ proximity)
+
+```  
+###### Figure 4.4.4: 4.4 Shapiro and Normality Test on Log Value (4)
+```{r chunk_name62, echo=FALSE, warning=FALSE, fig.show='only'}
+set.seed(123)
+PAFracking_location %>%
+  group_by(location) %>%
+  shapiro_test(log.methane4)
+```
