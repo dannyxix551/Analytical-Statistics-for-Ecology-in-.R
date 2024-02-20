@@ -1,0 +1,1533 @@
+---
+title: "Week_4_Problem_Set"
+author: "Daniel Crownover"
+date: "2024-02-12"
+output: pdf_document
+---
+
+
+
+
+Question 1:
+
+The first question asked us to compare the relationship between Tree Height and Tree Diameter. We created a linear model and a system of tests, to test the assumptions of the correlation.  I used figures 1.1.2 and 1.1.3 to show the paring matrix to see correlation across all variables. In Figure 1.1.4 we tested the linear correlation between mean tree height and tree diameter: with correlation coefficient (r =0.97) this indicates a strong positive linear relationship between Mean Diameter and Mean Height. The Null for the linear correlation is that there is no correlation between the two variables (in this case, Mean Diameter and Mean Height of trees), because (p = 0 ) there is statistic significance and we can assume correlation. Figure 1.1.5 is making linear model 1. The table and equation in 1.1.6 provide is the equation for a linear model for predicting the tree diameter based on the mean height of the tree. It suggests that the predicted tree diameter increases linearly with an increase in mean height, with a slope of 1.86315 and an intercept of -8.07896(see figure 1.1.5 and 1.1.6). The confidence intervals(97.5 and 2.5%) and predicted response variables of the linear model where plotted in 1.1.59 for a visualization. For time sake, a plot was not made again for the other re-run models until question 2.
+<blockquote>	The assumptions for Linear Model 1 plot. In plot linear model 1(figure 1.1.8) the residuals vs fitted plot shows a non linear horizontal line with distinct patterns and several outlying residuals noted. For the q-q plot in figure 1.1.8 the points show “significant departure” from the line. Suggesting we will need another model. The third model, standard resid vs fitted values on different scale(1.1.8) shows, the points distributed inside a triangular shape, with the scatter of the residuals increasing as the fitted values increase- suggesting we need to continue the data wrangling. The fourth plot in (1.1.8) is residuals-leverage and shows the plots that shows Cook’s distance for each of the observed values. The point is to highlight those yi (response) values that have the biggest effect on parameter estimates. The idea is to verify that no single data point is so influential that leaving it out changes the structure of the model,I have done this and will be taken out later.
+ <blockquote> In figure 1.1.9 we are using the chi^2 to assess whether the variance of the errors in the linear regression model is constant across all levels of the predictor variable. Generally, we want Homoscedasticity (which is Lower error variance),  which means that the spread of the residuals around the regression line remains constant across all levels of the predictor variable. Homoscedasticity is one of the assumptions of linear regression analysis and is the null hypothesis. When we have a high p value(p  = 0.77) we fail to reject the null, or we don’t have enough evidence to reject that the assumption of constant error variance is violated. This is good, however lets move onto the cook’s model.
+ <blockquote>	In figure 1.2.1, we identify all points of leverage using the cooks model and display them. Observations with large Cook's distances are potential outliers or influential points. These observations might have a significant impact on the estimated coefficients of the regression model. In 1.2.1 we see the top three with high residuals numbers, these have the potentials to be outliers, and when as i also saw this sames rows as problematic in the linear model plot, I am deciding to remove them in the re-run of the model. The p-value( p = 0.57) in the Durbin-Watson (figure 1.2.2) test assesses the presence of autocorrelation in the residuals of a regression model. Specifically, it tests whether there is a significant correlation between adjacent residuals, which could indicate a violation of the assumption of independence.
+We can assume is no significant autocorrelation detected in the residuals of the regression model. In figure 1.2.29, the shapiro wilks test has a p value(0.002) of high significance which means we  reject that the null is that the residuals are normally distributed and need to wrangle the data to make it so we can fail to reject the null.
+	<blockquote>  Linear model 2 I took out outliers identified by the various test in linear model 1 displayed in figure 1.2.4. Figure 1.2.49 makes linear model 2 without outliers. The predicted response variable equation shows -8.73904 intercept and 1.89 slope for mean height. Confidence intervals remain normal at 97.5 and 2.5%. Plots for lm2 show straighter line for residuals vs fitted(2.2.7) but slight variation indicating we need to log it. Plot 2 (fig. 2.2.7) shows a s shape, showing we need to log it. And plot 3 shows the same thing plot 1 did. Plot 4 shows we essentially need to log the data.
+	<blockquote> The P value increased in the Shapiro wilks (2.2.11 )test (p = 0.15) which means that we fail to reject that the data is normally distributed(assuming it is normally distrubuted) but to make that p-value higher we should log the data.
+ The non-constant variance test(2.28) p value is still high at( p = 0.6141) suggesting we still don't have enough evidence to reject that the assumption of constant error is violated. The cooks model (figure 2.2.9 )helped us identify some more residuals, however, it showed that the ones removed may have helped increase that p value in the shapiro test but still we know that the largest outliers were removed AND the data still fails the assumptions of good regression from the linear plots, so LETS LOG the data to see if this helps even more!
+ <blockquote> Linear model 3 I logged the data frame without the outliers. Figure 2.3.2 makes linear model 3. The predicted response variable equation shows -0.766 intercept and 1.38 slope for mean height these values you can expect to see when the data is normilized. Confidence intervals remain normal at 97.5 and 2.5%. Plots for lm2 show MUCH straighter line for residuals vs fitted(2.3.5). Plot 2 (fig. 2.3.5) shows a MUCH straighter shape fitting to that line, showing that the logarithm proved sucsessfull And plot 3 shows the same thing plot 1 did. Plot 4 shows a much straighter line.
+<blockquote>	 The P value increased in the Shapiro wilks (2.3.9 )test (p = 0.348) which means that we fail to reject that the data is normally distributed(assuming it is normally distributed) and make it much higher than last time.
+ The non-constant variance test(2.3.6) p value is still high at( p = 0.8) suggesting we still don't have enough evidence to reject that the assumption of constant error is violated. The cooks model (figure 2.3.7 )helped us verify some more residuals, however, it showed that the ones removed and the logged values may have helped increase that p value in the shapiro test. We still don’t know if logged with outliers made a difference. We are going to test this next.
+<blockquote> Linear model 4 I logged  comparison with the outliers. Figure 3.1.2 makes linear model 3. The predicted response variable equation shows -0.66 intercept and 1.35 slope for mean height these values you can expect to see when the data is normilized. Confidence intervals remain normal at 97.5 and 2.5%. Plots for lm2 show a straight line but it is still wonkier than the logged without outliers(3.3.5). Plot 2 (fig. 3.3.5) shows a slightly straighter shape fitting to that line, showing that the logarithm proved good but containing the outliers still disrupts the data.And plot 3 shows the same thing plot 1 did. Plot 4 shows a much straighter line.
+	<blockquote> The P value increased in the Shapiro wilks (2.3.9 )test (p = 0.0165) which means that we reject that the data is normally distributed(assuming it is normally distributed) but sine this is much lower than the logged data without outliers, it suggest that there is more reason to assume that the outliers have a large effect on the linear correlation of the data frame and should be removed.
+<blockquote> The non-constant variance test(3.3.6) p value is still high at( p = 0.84) suggesting we still don't have enough evidence to reject that the assumption of constant error is violated. The cooks model (figure 3.3.7 )helped us verify some more residuals, however, it showed that the ones removed and the logged values may have helped increase that p value in the shapiro test. We now know that the logged values without outliers are the winner here and provide.
+
+--- 
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+---
+
+
+
+Appendix:
+
+1. Question 1: Null and Alternative Hypothesis
+    - 1.1.2 Pairing Matrix tdat
+    - 1.1.3 Pairing Matrix tdat
+    - 1.1.4 Simple Linear Correlation
+    - 1.1.49 [Simple Linear Model 1 ] [raw data with outliers] [Below]
+    - 1.1.5 Making Linear Model 1 [raw data with outliers]
+    - 1.1.6 Predicted Response Variable in Liner Model 1 [raw data with outliers]
+    - 1.1.7 Confidence Intervals of Liner Model 1 [raw data with outliers]
+    - 1.79 Assumptions of Linear Model 1 [raw data with outliers] [Below]
+    - 1.1.8 Plot Linear Model 1 [raw data with outliers]
+    - 1.1.9 Non-constant Error Variance Test Linear Model 1 [raw data with outliers]
+    - 1.2.1 Cook's Model: Identifying Points of Leverage Linear Model 1 [raw data with outliers]
+    - 1.2.2 Durbin Watson Test Linear Model 1 [raw data with outliers]
+    - 1.2.29 Shapiro Wilks Test Linear Model 1 [raw data with outliers]
+    - 1.2.299 Report Results Simple Linear Model 1 [raw data with outliers]
+    - 1.2.3 [Simple Linear Model 2] [filtered and excluding outliers] [Below]
+    - 1.2.4 Filtering and Excluding Extemporaneous Data [filtered and excluding outliers]
+    - 1.2.49 Making Simple Liner Model 2 [filtered and excluding outliers]
+    - 1.2.5 Predicted Response Variable Linear Model 2 [filtered and excluding outliers]
+    - 1.2.6 Confidence Intervals Simple Linear Model 2 [filtered and excluding outliers]
+    - 1.2.69 Assumptions of Simple Linear Model 2 [filtered and excluding outliers] [Below]
+    - 2.2.7 Plot Simple Linear Model 2 [filtered and excluding outliers]
+    - 2.2.8 Non-constant Error Variance Test [filtered and excluding outliers]
+    - 2.2.9 Cook's Model Linear Model 2 [filtered and excluding outliers]
+    - 2.2.10 Durbin Watson Test Linear Model 2 [filtered and excluding outliers]
+    - 2.2.11 Shapiro Wilks Test Linear Model 2 [filtered and excluding outliers]
+    - 2.2.12 Report Results Simple Linear Model 2 [filtered and excluding outliers]
+    - 2.3 [Simple Linear Model 3] [Log transformed with filtered and excluded outliers]
+    - 2.3.1 Log transforming tdat to make simple linear model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.2 Making Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.3 Predicted Response Variable Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.4 Confidence Intervals Simple Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - Assumptions of Linear model 3: [Log transformed with filtered and excluded outliers]
+    - 2.3.5 Plot linear model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.6 Non-constant Error Variance Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.7 Cook's Model: Identifying Points of Leverage Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.8 Durbin Watson Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.9 Shapiro Wilks Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 3.0 [Simple Linear Model 4] [Logged comparison with outliers for comparison]
+    - 3.1.1 log transforming original tdat data frame [Logged comparison with outliers for comparison]
+    - 3.1.2 Making simple linear model 4 [Logged comparison with outliers for comparison]
+    - 3.3.4 Predicted Response Variable Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.4 Confidence Intervals Simple Linear Model 4 [Logged comparison with outliers for comparison]
+    - Assumptions of Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.5 Plot Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.6 Non-constant Error Variance Test Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.7 Cook's Model: Identifying Points of Leverage [Logged comparison with outliers for comparison]
+    - 3.3.9 Durbin Watson Test Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.10 Shapiro Wilks Test Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.11 Report Results Simple Linear Model 4 [Logged comparison with outliers for comparison]
+
+2. Question 2: Null and Alternative Hypothesis
+    - 1.1.4 Simple Linear Correlation
+    - 1.1.49 [Simple Linear Model 1 ] [raw data with outliers] [Below]
+    - 1.1.5 Making Linear Model 1 [raw data with outliers]
+    - 1.1.6 Predicted Response Variable in Liner Model 1 [raw data with outliers]
+    - 1.1.7 Confidence Intervals of Liner Model 1 [raw data with outliers]
+    - 1.79 Assumptions of Linear Model 1 [raw data with outliers] [Below]
+    - 1.1.8 Plot Linear Model 1 [raw data with outliers]
+    - 1.1.9 Non-constant Error Variance Test Linear Model 1 [raw data with outliers]
+    - 1.2.2 Durbin Watson Test Linear Model 1 [raw data with outliers]
+    - 1.2.1 Cook's Model: Identifying Points of Leverage Linear Model 1 [raw data with outliers]
+    - 1.2.29 Shapiro Wilks Test Linear Model 1 [raw data with outliers]
+    - 1.2.299 Report Results Simple Linear Model 1 [raw data with outliers]
+    - 1.2.3 [Simple Linear Model 2] [filtered and excluding outliers] [Below]
+    - 1.2.4 Filtering and Excluding Extemporaneous Data [filtered and excluding outliers]
+    - 1.2.4 Making Simple Liner Model 2 [filtered and excluding outliers]
+    - 1.2.5 Predicted Response Variable Linear Model 2 [filtered and excluding outliers]
+    - 1.2.6 Confidence Intervals Simple Linear Model 2 [filtered and excluding outliers]
+    - 1.2.69 Assumptions of Simple Linear Model 2 [filtered and excluding outliers] [Below]
+    - 2.2.7 Plot Simple Linear Model 2 [filtered and excluding outliers]
+    - 2.2.8 Non-constant Error Variance Test [filtered and excluding outliers]
+    - 2.2.9 Cook's Model Linear Model 2 [filtered and excluding outliers]
+    - 2.2.10 Durbin Watson Test Linear Model 2 [filtered and excluding outliers]
+    - 2.2.11 Shapiro Wilks Test Linear Model 2 [filtered and excluding outliers]
+    - 2.11.12 Report Results Simple Linear Model 2 [filtered and excluding outliers]
+    - 2.3 [Simple Linear Model 3] [Log transformed with filtered and excluded outliers]
+    - 2.3.1 Log transforming tdat to make simple linear model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.2 Making Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.3 Predicted Response Variable Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.4 Confidence Intervals Simple Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - Assumptions of Linear model 3: [Log transformed with filtered and excluded outliers]
+    - 2.3.5 Plot linear model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.6 Non-constant Error Variance Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.7 Cook's Model: Identifying Points of Leverage Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.8 Durbin Watson Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 2.3.9 Shapiro Wilks Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+    - 3.0 [Simple Linear Model 4] [Logged comparison with outliers for comparison]
+    - 3.1.1 log transforming original tdat data frame [Logged comparison with outliers for comparison]
+    - 3.1.2 Making simple linear model 4 [Logged comparison with outliers for comparison]
+    - 3.3.4 Predicted Response Variable Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.4 Confidence Intervals Simple Linear Model 4 [Logged comparison with outliers for comparison]
+    - Assumptions of Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.5 Plot Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.6 Non-constant Error Variance Test Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.7 Cook's Model: Identifying Points of Leverage [Logged comparison with outliers for comparison]
+    - 3.3.9 Durbin Watson Test Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.10 Shapiro Wilks Test Linear Model 4 [Logged comparison with outliers for comparison]
+    - 3.3.11 Report Results Simple Linear Model 4 [Logged comparison with outliers for comparison]
+
+
+
+```{r chunk_name52, warning=FALSE, fig.show='only', include = FALSE}
+library(lmtest)
+library(ggplot2)
+library(GGally)
+library(ggpubr)
+library(rstatix)
+library(dplyr)
+library(ggthemes)
+library(ggformula)
+library(ggpmisc)
+library(arm)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+
+#### Question 1: Null and Alternative Hypothesis
+
+- H_0: Mean tree diameter does not change with mean tree height
+- H_a: Mean tree diameter does change with mean tree height
+
+
+
+
+```{r chunk_name2, warning=FALSE, fig.show='only', include = FALSE}
+tdat <-read.csv("/Users/daniel/Downloads/BIO 591 Coding Files/Labs/Lab 4/Lab 4 Data/TreePlots.csv")
+
+colnames(tdat)[colnames(tdat) == "mDBH.cm"] <- "MEAN Diamater (cm)"
+colnames(tdat)[colnames(tdat) == "mBA.cm"] <- "MEAN Basal Area(cm^2)"
+colnames(tdat)[colnames(tdat) == "mWD.g.m3"] <- "Mean Wood Density (g m^3)"
+colnames(tdat)[colnames(tdat) == "mH.m"] <- "Mean Height (m)"
+colnames(tdat)[colnames(tdat) == "AGBH.Mg.ha"] <- " Above Ground Biomass(mg ha-1)"
+colnames(tdat)[colnames(tdat) == "Trees"] <- "# of Trees"
+colnames(tdat)[colnames(tdat) == "mBA.cm2"] <- "Mean Basal Area (cm^2)"
+
+```
+
+
+
+
+
+
+
+## plot scatter
+```{r chunk_name98765334842323, warning=FALSE, fig.show='only', include = FALSE}
+
+theme_Publication <- function(base_size=10, base_family="Arial") {
+  
+  (theme_foundation(base_size=base_size, base_family=base_family)
+   + theme(plot.title = element_text(hjust = 0.5),
+           text = element_text(),
+           panel.background = element_rect(colour = NA),
+           plot.background = element_rect(colour = NA),
+           panel.border = element_rect(colour = NA),
+           axis.title = element_text(size = rel(1)),
+           axis.title.y = element_text(angle=90,vjust =2),
+           axis.text = element_text(), 
+           axis.line = element_line(colour="black"),
+           axis.ticks = element_line(),
+           panel.grid.major = element_line(colour="#f0f0f0"),
+           panel.grid.minor = element_blank(),
+           legend.key = element_rect(colour = NA),
+           legend.position = "right",
+           legend.title = element_text(face="italic"),
+           strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0")
+   ))
+  
+}
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 1.1.2 Pairing Matrix tdat
+```{r chunk_name1000, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+pairs(tdat)
+```
+
+## 1.1.3 Pairing Matrix  tdat
+```{r chunk_name3, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+
+library(ggplot2)
+theme_set(theme_bw())
+
+ggpairs(tdat[c(2,3,4,5,6)])
+
+```
+
+### 1.1.4 Simple Linear Correlation
+```{r chunk_name4, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Load required libraries
+library(ggplot2)
+library(GGally)
+library(knitr)
+library(kableExtra)
+
+# Perform correlation test
+cor12 <- cor_test(tdat, "MEAN Diamater (cm)", "Mean Height (m)")
+
+# Convert the correlation test output to a data frame
+cor12_df <- as.data.frame(cor12)
+
+# Create a pretty table using kable
+kable(cor12_df, "latex", booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
+## null: no correlation, since we have a low p_value of high significance, we can reject that there was no correlation and assume that there is correlation
+
+
+```
+
+
+#### 1.1.49 [Simple Linear Model 1 ] [raw data with outliers] [Below]
+
+
+#### 1.1.5 Making Linear Model 1 [raw data with outliers]
+```{r chunk_name5,warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+
+# linear regression model
+lm2 <- lm(`MEAN Diamater (cm)` ~ `Mean Height (m)`, data = tdat)
+
+# Generate summary table
+sum_lm2 <- summary(lm2)
+
+# Extract coefficients table
+coefficients_table <- sum_lm2$coefficients
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(coefficients_table, format = "markdown")
+
+```
+
+
+
+
+
+## 1.1.58 Calculating prediction and confidence intervals
+```{r chunk_name2933498503,  warning=FALSE, fig.show='only', include = FALSE }
+
+
+
+conf <- as.data.frame(predict(lm2, newdata = tdat,
+                             interval = "confidence",
+                             level = 0.95))
+
+conf$'Mean Height (m)' <- tdat$'Mean Height (m)'
+
+pred <- as.data.frame(predict(lm2, newdata = tdat,
+                             interval = "prediction",
+                             level = 0.95))
+
+pred$'Mean Height (m)' <- tdat$'Mean Height (m)'
+
+```
+
+
+## 1.1.59 Plotting Prediction and Confidence Intervals linear model 1
+```{r chunk_name2142332,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(ggplot2)
+library(dplyr)
+
+# Assuming `conf` and `pred` are data frames containing confidence and prediction intervals respectively
+
+plot1 <- tdat %>% 
+  ggplot(aes(x = `Mean Height (m)`, y = `MEAN Diamater (cm)`)) +
+  ggtitle("Linear Model 1") +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  geom_line(data = conf, aes(x = `Mean Height (m)`, y = lwr), color = "yellow") +
+  geom_line(data = conf, aes(x = `Mean Height (m)`, y = upr), color = "yellow") +
+  geom_line(data = pred, aes(x = `Mean Height (m)`, y = lwr), color = "green") + 
+  geom_line(data = pred, aes(x = `Mean Height (m)`, y = upr), color = "green") +
+  stat_poly_eq(aes(label = paste(after_stat(eq.label), after_stat(rr.label), sep = "*\", \"*")), colour = "red")
+
+plot1
+
+```
+
+
+#### 1.1.6 Predicted Response Variable in Liner Model 1 [raw data with outliers]
+
+$$\hat{y_{i}} = -8.07896 + 1.86315 × Mean Height (m)$$
+
+
+#### 1.1.7 Confidence Intervals of Liner Model 1 [raw data with outliers]
+```{r chunk_name6, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Compute confidence intervals
+conf_intervals <- confint(lm2, 'MEAN Diamater (cm)', level = 0.95)
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(conf_intervals, format = "markdown")
+
+
+library(ggplot2)
+
+# Assuming conf_intervals contains your confidence interval data
+
+# Plotting the data
+
+```
+
+#### 1.79 Assumptions of Linear Model 1 [raw data with outliers] [Below]
+
+## 1.1.8 Plot Linear Model 1 [raw data with outliers]
+```{r chunk_name7, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+plot(lm2)
+```
+
+#### 1.1.9 Non-constant Error Variance Test Linear Model 1 [raw data with outliers]
+```{r chunk_name8, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+library(lmtest)
+ncvTest(lm2)
+bptest(lm2, studentize = F)
+bptest(lm2, studentize = T)
+```
+
+#### 1.2.1 Cook's Model: Identifying Points of Leverage Linear Model 1 [raw data with outliers]
+```{r chunk_name92, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(broom)
+library(ggplot2)
+library(kableExtra)
+model.diag.metrics101dubstep <- augment(lm2) 
+
+top_145k <- model.diag.metrics101dubstep %>%
+  top_n(3, wt = .cooksd)  
+
+kable(top_145k, format = "markdown")
+kable(model.diag.metrics101dubstep, format = "markdown")
+
+
+```
+
+#### 1.2.2 Durbin Watson Test Linear Model 1 [raw data with outliers]
+
+
+```{r chunk_name1325, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+durbinWatsonTest(lm2)
+```
+
+#### 1.2.29 Shapiro Wilks Test Linear Model 1 [raw data with outliers]
+```{r chunk_name1205, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## null is that the residuals are normally distributed --> residuals is the median distance of the point is from the regression line
+residuals_lm2 <- residuals(lm2)
+
+# Performing Shapiro-Wilk test for normality
+shapiro.test(residuals_lm2)
+```
+
+#### 1.2.299 Report Results Simple Linear Model 1 [raw data with outliers]
+
+The correlation coefficient (r = 0.97) from Figure 1.1.4 suggests a strong positive linear relationship between Mean Diameter and Mean Height, supported by a statistically significant p-value (p = 0). Linear Model 1, presented in Figure 1.1.5, illustrates a predictive equation for tree diameter based on mean height, with a slope of 1.86315 and an intercept of -8.07896. However, assessments of assumptions in Linear Model 1 reveal non-linear patterns and influential outliers, prompting data wrangling and outlier removal. While the chi-squared test indicates homoscedasticity (p = 0.77), the Cook's model identifies influential outliers. Further tests, including the Durbin-Watson test and Shapiro-Wilks test, reveal no significant autocorrelation but highlight the need for data normalization to achieve normal distribution.
+
+
+
+
+
+
+
+
+#### 1.2.3 [Simple Linear Model 2] [filtered and excluding outliers] [Below]
+
+
+
+#### 1.2.4 Filtering and Excluding Extemporaneous Data [filtered and excluding outliers]
+```{r chunk_name10,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+tdat1 <- tdat[-c(60,61,51),]
+
+kable(head(tdat1))
+```
+
+
+#### 1.2.49 Making Simple Liner Model 2 [filtered and excluding outliers]
+```{r chunk_name11,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+
+# linear regression model
+lm3 <- lm(`MEAN Diamater (cm)` ~ `Mean Height (m)`, data = tdat1)
+
+# Generate summary table
+sum_lm3 <- summary(lm3)
+
+# Extract coefficients table
+coefficients_table2 <- sum_lm3$coefficients
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(coefficients_table2, format = "markdown")
+```
+
+#### 1.2.5 Predicted Response Variable Linear Model 2  [filtered and excluding outliers]
+
+$$\hat{y_{i}} = -8.73904 + 1.89909 × Mean Height (m)$$
+
+#### 1.2.6 Confidence Intervals Simple Linear Model 2 [filtered and excluding outliers]
+```{r chunk_name12,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Compute confidence intervals
+conf_intervals2 <- confint(lm3, 'MEAN Diamater (cm)', level = 0.95)
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(conf_intervals2, format = "markdown")
+
+```
+
+#### 1.2.69 Assumptions of Simple Linear Model 2 [filtered and excluding outliers] [Below]
+
+## 2.2.7 Plot Simple Linear Model 2  [filtered and excluding outliers]
+```{r chunk_name13,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+plot(lm3)
+```
+
+
+
+#### 2.2.8 Non-constant Error Variance Test  [filtered and excluding outliers]
+```{r chunk_name14595959, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+ncvTest(lm3)
+bptest(lm3, studentize = F)
+bptest(lm3, studentize = T)
+```
+
+#### 2.2.9 Cook's Model Linear Model 2  [filtered and excluding outliers]
+```{r chunk_name140, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(broom)
+library(ggplot2)
+library(kableExtra)
+
+model.diag.metrics202j <- augment(lm3) 
+
+top_201_lm3 <- model.diag.metrics202j %>%
+  top_n(3, wt = .cooksd)  
+
+kable(top_201_lm3, format = "markdown")
+kable(model.diag.metrics202j, format = "markdown")
+
+```
+
+#### 2.2.10 Durbin Watson Test Linear Model 2 [filtered and excluding outliers]
+```{r chunk_name15, warning=FALSE, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+durbinWatsonTest(lm3)
+```
+
+
+#### 2.2.11 Shapiro Wilks Test Linear Model 2 [filtered and excluding outliers]
+```{r chunk_name9, warning=FALSE,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## null is that the residuals are normally distributed --> residuals is the median distance of the point is from the regression line
+residuals_lm3 <- residuals(lm3)
+
+# Performing Shapiro-Wilk test for normality
+shapiro.test(residuals_lm3)
+```
+
+
+
+#### 2.2.12 Report Results Simple Linear Model 2  [filtered and excluding outliers]
+
+
+
+Linear Model 2, constructed after removing outliers detected in Linear Model 1 (Figure 1.2.4), exhibits an intercept of -8.73904 and a slope of 1.89 for mean height. While confidence intervals remain normal, plots indicate slight deviations necessitating data logging to address non-linearity. The Shapiro-Wilks test yields a p-value of 0.15, indicating non-rejection of normality assumptions, yet data logging could further enhance this. Despite a high p-value (p = 0.6141) in the non-constant variance test and residual identification by the Cook's model, data normalization remains imperative for improved regression model assumptions.
+
+
+
+
+#### 2.3 [Simple Linear Model 3]  [Log transformed with filtered and excluded outliers]
+
+
+#### 2.3.1 Log transforming tdat to make simple linear model 3 [Log transformed with filtered and excluded outliers]
+```{r  chunk_name 221211212, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## making new column then putting log of the mean height inside
+tdat1$log_height <- log(tdat1$`Mean Height (m)`)
+## making new column
+tdat1$log_diameter <- log(tdat1$`MEAN Diamater (cm)`)
+
+```
+
+
+
+#### 2.3.2 Making Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name 2212141212, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+lm4 <- lm(`log_diameter` ~ `log_height`, data = tdat1)
+
+
+# Generate summary table
+sum_lm4 <- summary(lm4)
+
+# Extract coefficients table
+coefficients_table3 <- sum_lm4$coefficients
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(coefficients_table3, format = "markdown")
+```
+
+
+
+
+#### 2.3.3 Predicted Response Variable Linear Model 3  [Log transformed with filtered and excluded outliers]
+
+$$\hat{y_{i}} = -0.7658777 + 1.3844570	 × Mean Height (m)$$
+
+
+#### 2.3.4 Confidence Intervals Simple Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name1423, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Compute confidence intervals
+conf_intervals100 <- confint(lm4, 'MEAN Diamater (cm)', level = 0.95)
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(conf_intervals100, format = "markdown")
+
+```
+####  Assumptions of Linear model 3: [Log transformed with filtered and excluded outliers]
+
+## 2.3.5 Plot linear model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name696969, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+plot(lm4)
+```
+
+## 2.3.6 Non-constant Error Variance Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name114, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+library(lmtest)
+ncvTest(lm4)
+bptest(lm4, studentize = F)
+bptest(lm4, studentize = T)
+```
+
+
+## 2.3.7 Cook's Model: Identifying Points of Leverage Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name123, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(broom)
+library(ggplot2)
+library(kableExtra)
+model.diag.metrics12345678f <- augment(lm4) 
+
+top_101g <- model.diag.metrics12345678f %>%
+  top_n(3, wt = .cooksd)  
+
+kable(top_101g, format = "markdown")
+kable(model.diag.metrics12345678f, format = "markdown")
+
+```
+
+#### 2.3.8 Durbin Watson Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name222225, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+durbinWatsonTest(lm4)
+```
+
+#### 2.3.9 Shapiro Wilks Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name138, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## null is that the residuals are normally distributed --> residuals is the median distance of the point is from the regression line
+residuals_lm4 <- residuals(lm4)
+
+# Performing Shapiro-Wilk test for normality
+shapiro.test(residuals_lm4)
+```
+
+## Report Results Linear Model 3 [Log transformed with filtered and excluded outliers] 2.3.99
+Linear Model 3 involved logging the data frame after outlier removal, as depicted in Figure 2.3.2. The predicted response variable equation presents an intercept of -0.766 and a slope of 1.38 for mean height, reflecting normalized data. Confidence intervals remain consistent. Plots indicate significantly straighter lines for residuals vs fitted values (2.3.5), affirming the success of logarithmic transformation. The Shapiro-Wilks test yielded a p-value of 0.348, supporting the assumption of normal distribution, while the non-constant variance test (p = 0.8) suggests constant error assumptions remain unviolated. Despite residual verification by the Cook's model, the impact of logged outliers on model assumptions warrants further investigation.
+
+
+
+
+
+
+
+
+
+
+
+
+#### 3.0 [Simple Linear Model 4] [Logged comparison with outliers for comparisson]
+
+#### 3.1.1 log transforming original tdat data frame [Logged comparison with outliers for comparisson]
+```{r chunk_name1201, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+tdat$log_height_2 <- log(tdat$`Mean Height (m)`)
+tdat$log_diameter_3 <- log(tdat$`MEAN Diamater (cm)`)
+```
+## 3.1.2 Making simple linear model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name1203, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+lm5_with_outliers <- lm(`log_diameter_3` ~ `log_height_2`, data = tdat)
+
+
+# Generate summary table
+sum_lm5_with_outliers<- summary(lm5_with_outliers)
+
+# Extract coefficients table
+coefficients_table3 <- sum_lm5_with_outliers$coefficients
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(coefficients_table3, format = "markdown")
+```
+#### 3.3.4 Predicted Response Variable Linear Model 4 [Logged comparison with outliers for comparisson]
+
+$$\hat{y_{i}} = -0.6686391 + 1.3507256	 × Mean Height (m)$$
+
+
+#### 3.3.4 Confidence Intervals Simple Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name1023,warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Compute confidence intervals
+conf_intervals100 <- confint(lm5_with_outliers, 'MEAN Diamater (cm)', level = 0.95)
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(conf_intervals100, format = "markdown")
+
+```
+
+#### Assumptions of Linear Model 4 [Logged comparison with outliers for comparisson]
+
+## 3.3.5 Plot Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunkname68866886868, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+plot(lm5_with_outliers)
+```
+
+#### 3.3.6 Non-constant Error Variance Test Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name14, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+library(lmtest)
+ncvTest(lm5_with_outliers)
+bptest(lm5_with_outliers, studentize = F)
+bptest(lm5_with_outliers, studentize = T)
+```
+
+
+
+
+
+#### 3.3.7 Cook's Model: Identifying Points of Leverage [Logged comparison with outliers for comparisson]
+```{r chunk_name9999, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(broom)
+library(ggplot2)
+library(kableExtra)
+model.diag.metrics695 <- augment(lm5_with_outliers) 
+
+top_504f <- model.diag.metrics695 %>%
+  top_n(3, wt = .cooksd)  
+
+kable(top_504f, format = "markdown")
+kable(model.diag.metrics695, format = "markdown")
+
+```
+
+
+## 3.3.9 Durbin Watson Test Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name25, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+library(lmtest)
+library(kableExtra)
+
+durbinWatsonTest(lm5_with_outliers)
+
+```
+
+
+#### 3.3.10 Shapiro Wilks Test Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name959595, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## null is that the residuals are normally distributed --> residuals is the median distance of the point is from the regression line
+residuals_lm5_with_outliers <- residuals(lm5_with_outliers)
+
+# Performing Shapiro-Wilk test for normality
+shapiro.test(residuals_lm5_with_outliers)
+```
+
+#### 3.3.11 Report Results Simple Linear Model 4 [Logged comparison with outliers for comparisson]
+
+Figure 3.1.2 illustrates the creation of this model. The predicted response variable equation yields an intercept of -0.66 and a slope of 1.35 for mean height, indicating normalized data. Confidence intervals remain consistent. Plots reveal a straighter line but with noticeable irregularities compared to the logged data without outliers (3.3.5). While the Shapiro-Wilks test resulted in a p-value of 0.0165, indicating rejection of normal distribution, the non-constant variance test (p = 0.84) suggests constant error assumptions are unviolated. Although the Cook's model verified additional residuals, the persistence of high p-values suggests the superiority of logged values without outliers for modeling purposes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+
+
+---
+
+
+Question 2:
+
+The second question asked us to compare the relationship between Tree Height and Tree Density. We created a linear model and a system of tests, to test the assumptions of the correlation. Figure 1.1.4 we tested the linear correlation between mean tree height and tree density: with correlation coefficient (r =0.49) this indicates a positive linear relationship between Mean Diameter and Mean Height. The Null for the linear correlation is that there is no correlation between the two variables (in this case, Mean Diameter and Mean Height of trees), because (p = 1.15e-05 ) there is statistic significance and we can assume correlation. Figure 1.1.5 is making linear model 1. The table and equation in 1.1.6 provide is the equation for a linear model for predicting the tree diameter based on the mean height of the tree. It suggests that the predicted tree height increases linearly with an increase in density, with a slope of 11.24 and an intercept of 10.11(see figure 1.1.5 and 1.1.6). The confidence intervals(97.5 and 2.5%) and predicted response variables of the linear model where plotted in 1.1.59 for a visualization. 
+<blockquote>	The assumptions for Linear Model 1 plot. In plot linear model 1(figure 1.1.8) the residuals vs fitted plot shows a non linear “horizonta”l line with distinct patterns and several outlying residuals noted. For the q-q plot in figure 1.1.8 the points show “significant departure” from the line. Suggesting we will need another model. The third model, standard resid vs fitted values on different scale(1.1.8) shows, the points distributed inside a triangular shape, with the scatter of the residuals increasing as the fitted values increase- suggesting we need to continue the data wrangling. The fourth plot in (1.1.8) is residuals-leverage and shows the plots that shows Cook’s distance for each of the observed values. The point is to highlight those yi (response) values that have the biggest effect on parameter estimates. The idea is to verify that no single data point is so influential that leaving it out changes the structure of the model,I have done this and will be taken out later.
+<blockquote> In figure 1.1.9 we are using the chi^2 to assess whether the variance of the errors in the linear regression model is constant across all levels of the predictor variable. Generally, we want Homoscedasticity (which is Lower error variance),  which means that the spread of the residuals around the regression line remains constant across all levels of the predictor variable. Homoscedasticity is one of the assumptions of linear regression analysis and is the null hypothesis. When we have a p value(p  = 0.020) and we fail to reject the null, or we don’t have enough evidence to reject that the assumption of constant error variance is violated. This is good, however lets move onto the cook’s model.
+ <blockquote>	In figure 1.2.1, we identify all points of leverage using the cooks model and display them. Observations with large Cook's distances are potential outliers or influential points. These observations might have a significant impact on the estimated coefficients of the regression model. In 1.2.1 we see the top three with high residuals numbers, these have the potentials to be outliers, and also observed this same rows as problematic in the linear model plot, so it was decided to remove them in the re-run of the model. The p-value( p = 0.03) in the Durbin-Watson (figure 1.2.2) test assesses the presence of autocorrelation in the residuals of a regression model. Specifically, it tests whether there is a significant correlation between adjacent residuals, which could indicate a violation of the assumption of independence.
+We can assume is no significant autocorrelation detected in the residuals of the regression model. In figure 1.2.29, the shapiro wilks test has a p value(0.2871) of low significance which means we  fail reject that the null is that the residuals are normally distributed, however we can make this P value higher so lets wrangle the data a bit.
+<blockquote>	 Linear model 2 I took out outliers identified by the various test in linear model 1 displayed in figure 1.2.4. Figure 1.2.49 makes linear model 2 without outliers. The predicted response variable equation shows 11.29 intercept and 9.09 slope for mean height. Confidence intervals remain normal at 97.5 and 2.5%. Plots for lm2 show straighter line for residuals vs fitted(2.2.7) but slight variation indicating we need to log it. Plot 2 (fig. 2.2.7) shows a s shape, showing we need to log it. And plot 3 shows the same thing plot 1 did. Plot 4 shows we essentially need to log the data.
+<blockquote>	 The P value increased in the Shapiro wilks (2.2.11 )test (p = 0.4368) which means that we fail to reject that the data is normally distributed(assuming it is normally distrubuted) but to make that p-value higher we should log the data.
+ The non-constant variance test(2.2.8) p value is still high at( p = 0.46) suggesting we still don't have enough evidence to reject that the assumption of constant error is violated. The cooks model (figure 2.2.9 )helped us identify some more residuals, however, it showed that the ones removed may have helped increase that p value in the shapiro test but still we know that the largest outliers were removed AND the data still fails the assumptions of good regression from the linear plots, so LETS LOG the data to see if this helps even more!
+<blockquote> Linear model 3 I logged the data frame without the outliers. Figure 2.3.2 makes linear model 3. The predicted response variable equation shows 2.97 intercept and .31 slope for mean height these values you can expect to see when the data is normilized. Confidence intervals remain normal at 97.5 and 2.5%. Plots for lm2 show MUCH straighter line for residuals vs fitted(2.3.5). Plot 2 (fig. 2.3.5) shows a MUCH straighter shape fitting to that line, showing that the logarithm proved successful and plot 3 shows the same thing plot 1 did. Plot 4 shows a much straighter line! These are all great signs.
+	 <blockquote>The P value increased in the Shapiro wilks (2.3.9 )test (p = 0.174) which means that we fail to reject that the data is normally distributed(assuming it is normally distributed) and make it much higher than last time.  But this could be a higher p value, next lets try it with outliers and logged.
+ <blockquote>The non-constant variance test(2.3.6) p value is still high at( p = 0.14) suggesting we still don't have enough evidence to reject that the assumption of constant error is violated. The cooks model (figure 2.3.7 )helped us verify some more residuals, however, it showed that the ones removed and the logged values may have helped increase that p value in the shapiro test. We still don’t know if logged with outliers made a difference. We are going to test this next.
+<blockquote> Linear model 4 I logged comparison with the outliers. Figure 3.1.2 makes linear model 4. The predicted response variable equation shows 2.9 intercept and .335 slope for mean height these values you can expect to see when the data is normalized. Confidence intervals remain normal at 97.5 and 2.5%. Plots for lm4 show a straight line but it is still wonkier than the logged without outliers(3.3.5). Plot 2 (fig. 3.3.5) shows a slightly straighter shape fitting to that line, showing that the logarithm proved good but containing the outliers still disrupts the data.And plot 3 shows the same thing plot 1 did. Plot 4 shows a much straighter line.
+<blockquote>	 The P value increased in the Shapiro wilks (2.3.9 )test (p = 0.34) which means that we fail to reject that the data is normally distributed(assuming it is normally distributed) but sine this is much lower than the logged data without outliers, it suggest that there is more reason to assume that the outliers have a large effect on the linear correlation of the data frame and should be removed.
+ <blockquote>The non-constant variance test(3.3.6) p value is still high at( p = 0.84) suggesting we still don't have enough evidence to reject that the assumption of constant error is violated. The cooks model (figure 3.3.7 )helped us verify some more residuals, however, it showed that the Although the logged values with outliers had a higher shapiro p value than logged values without,  their plots for the linear model 4 looked very wonky and non linear compared to that of linear model 3, making the logged data WITHOUT outliers, the final winner for what we will use for the correlation model.
+
+
+
+
+
+
+#### Question 2: Null and Alternative Hypothesis
+
+
+- H_0: Tree density does not change with mean tree height
+- H_a: Tree density does change with mean tree height
+
+
+
+```{r chunk_name232323, warning=FALSE, fig.show='only', include = FALSE}
+tdat <-read.csv("/Users/daniel/Downloads/BIO 591 Coding Files/Labs/Lab 4/Lab 4 Data/TreePlots.csv")
+
+colnames(tdat)[colnames(tdat) == "mDBH.cm"] <- "MEAN Diamater (cm)"
+colnames(tdat)[colnames(tdat) == "mBA.cm"] <- "MEAN Basal Area(cm^2)"
+colnames(tdat)[colnames(tdat) == "mWD.g.m3"] <- "Mean Wood Density (g m^3)"
+colnames(tdat)[colnames(tdat) == "mH.m"] <- "Mean Height (m)"
+colnames(tdat)[colnames(tdat) == "AGBH.Mg.ha"] <- " Above Ground Biomass(mg ha-1)"
+colnames(tdat)[colnames(tdat) == "Trees"] <- "# of Trees"
+colnames(tdat)[colnames(tdat) == "mBA.cm2"] <- "Mean Basal Area (cm^2)"
+
+```
+
+
+
+
+### 1.1.4 Simple Linear Correlation
+```{r chunk_name4545, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Load required libraries
+library(ggplot2)
+library(GGally)
+library(knitr)
+library(kableExtra)
+
+# Perform correlation test
+cor13 <- cor_test(tdat, "Mean Height (m)", "Mean Wood Density (g m^3)")
+
+# Convert the correlation test output to a data frame
+cor13_df <- as.data.frame(cor13)
+
+# Create a pretty table using kable
+kable(cor13_df, "latex", booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
+## null: no correlation, since we have a low p_value of high significance, we can reject that there was no correlation and assume that there is correlation
+```
+
+
+#### 1.1.49 [Simple Linear Model 1 ] [raw data with outliers] [Below]
+
+
+#### 1.1.5 Making Linear Model 1 [raw data with outliers]
+```{r chunk_name5454,warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+
+# linear regression model
+lm22 <- lm(`Mean Height (m)` ~ `Mean Wood Density (g m^3)`, data = tdat)
+
+# Generate summary table
+sum_lm22 <- summary(lm22)
+
+# Extract coefficients table
+coefficients_table22 <- sum_lm22$coefficients
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(coefficients_table22, format = "markdown")
+
+```
+
+
+#### 1.1.6 Predicted Response Variable in Liner Model 1 [raw data with outliers]
+
+$$\hat{y_{i}} = 10.11059 + 11.24190 × Mean Height (m)$$
+
+
+#### 1.1.7 Confidence Intervals of Liner Model 1 [raw data with outliers]
+```{r chunk_name6464, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Compute confidence intervals
+conf_intervals22 <- confint(lm22, 'MEAN Height (m)', level = 0.95)
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(conf_intervals22, format = "markdown")
+
+```
+
+#### 1.79 Assumptions of Linear Model 1 [raw data with outliers] [Below]
+
+## 1.1.8 Plot Linear Model 1 [raw data with outliers]
+```{r chunk_name7272272, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+plot(lm22)
+```
+
+#### 1.1.9 Non-constant Error Variance Test Linear Model 1 [raw data with outliers]
+```{r chunk_name898, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+library(lmtest)
+ncvTest(lm22)
+bptest(lm22, studentize = F)
+bptest(lm22, studentize = T)
+```
+
+#### 1.2.1 Cook's Model: Identifying Points of Leverage Linear Model 1 [raw data with outliers]
+```{r chunk_name923456, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(broom)
+library(ggplot2)
+library(kableExtra)
+model.diag.metrics69823 <- augment(lm22) 
+
+top_146c <- model.diag.metrics69823 %>%
+  top_n(3, wt = .cooksd)  
+
+kable(top_146c, format = "markdown")
+kable(model.diag.metrics69823, format = "markdown")
+
+```
+
+#### 1.2.2 Durbin Watson Test Linear Model 1 [raw data with outliers]
+```{r chunk_name132554327654, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+durbinWatsonTest(lm22)
+```
+
+## 1.1.58 Calculating prediction and confidence intervals
+```{r chunk_name293323498503,  warning=FALSE, fig.show='only', include = FALSE }
+
+
+
+conf2 <- as.data.frame(predict(lm22, newdata = tdat,
+                             interval = "confidence",
+                             level = 0.95))
+
+conf2$'Mean Height (m)' <- tdat$'Mean Height (m)'
+
+pred2 <- as.data.frame(predict(lm22, newdata = tdat,
+                             interval = "prediction",
+                             level = 0.95))
+
+pred2$'Mean Height (m)' <- tdat$'Mean Height (m)'
+
+```
+
+
+## 1.1.59 Plotting Prediction and Confidence Intervals linear model 1
+```{r chunk_name2110042332,   warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(ggplot2)
+library(dplyr)
+# Assuming `conf` and `pred` are data frames containing confidence and prediction intervals respectively
+names(tdat)
+# Assuming `conf` and `pred` are data frames containing confidence and prediction intervals respectively
+names(tdat)
+plot2 <- tdat %>% 
+  ggplot(aes(x = `Mean Wood Density (g m^3)`, y = `Mean Height (m)`)) +
+  ggtitle("Linear Model Question 2: 1") +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  geom_line(data = conf2, aes(x = `Mean Height (m)`, y = lwr), color = "yellow") +
+  geom_line(data = conf2, aes(x = `Mean Height (m)`, y = upr), color = "yellow") +
+  geom_line(data = pred2, aes(x = `Mean Height (m)`, y = lwr), color = "green") + 
+  geom_line(data = pred2, aes(x = `Mean Height (m)`, y = upr), color = "green") +
+  stat_poly_eq(aes(label = paste(after_stat(eq.label), after_stat(rr.label), sep = "*\", \"*")), colour = "red") +
+  xlim(0.25, 1)  # Set the maximum x-axis range to 2
+
+plot2
+
+
+
+```
+
+
+
+
+#### 1.2.29 Shapiro Wilks Test Linear Model 1 [raw data with outliers]
+```{r chunk_name12052345, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## null is that the residuals are normally distributed --> residuals is the median distance of the point is from the regression line
+residuals_lm22 <- residuals(lm22)
+
+# Performing Shapiro-Wilk test for normality
+shapiro.test(residuals_lm22)
+```
+
+#### 1.2.299 Report Results Simple Linear Model 1 [raw data with outliers]
+
+The analysis for Linear Model 1 between Tree Height and Tree Density reveals a positive linear relationship with a correlation coefficient (r = 0.49), indicating statistical significance (p = 1.15e-05). The linear model equation suggests that tree height increases linearly with density, with a slope of 11.24 and an intercept of 10.11. Confidence intervals and predicted response variables were visualized in Figure 1.1.59.
+Assumptions for Linear Model 1 were assessed. The residuals vs fitted plot (Figure 1.1.8) displays a non-linear pattern with distinct outliers, suggesting the need for another model. The q-q plot also indicates significant deviations from linearity. The standard residuals vs fitted values plot shows a triangular distribution, implying data wrangling is required. The residuals-leverage plot (Figure 1.1.8) using the Cook's model highlights potential outliers, aiding in their identification and potential removal for model refinement.
+In Figure 1.1.9, the chi^2 test assesses the constancy of error variance across predictor variable levels. A p-value of 0.020 suggests that we fail to reject the null hypothesis of constant error variance, indicating homoscedasticity.
+Moving to the Durbin-Watson test (Figure 1.2.2), the p-value (p = 0.03) indicates no significant autocorrelation in the residuals, supporting the assumption of independence. However, the Shapiro-Wilks test (Figure 1.2.29) suggests non-normality in residuals (p = 0.2871), necessitating further data manipulation for normal distribution attainment.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### 1.2.3 [Simple Linear Model 2] [filtered and excluding outliers] [Below]
+
+
+
+#### 1.2.4 Filtering and Excluding Extemporaneous Data [filtered and excluding outliers]
+```{r chunk_name1010123,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+tdat2 <- tdat[-c(60,28,51,21),]
+
+kable(head(tdat2))
+```
+
+
+#### 1.2.4 Making Simple Liner Model 2 [filtered and excluding outliers]
+```{r chunk_name11121212,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+
+# linear regression model
+names(tdat2)
+lm33 <- lm(`Mean Height (m)` ~ `Mean Wood Density (g m^3)`, data = tdat2)
+
+# Generate summary table
+sum_lm33 <- summary(lm33)
+
+# Extract coefficients table
+coefficients_table25 <- sum_lm33$coefficients
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(coefficients_table25, format = "markdown")
+```
+
+#### 1.2.5 Predicted Response Variable Linear Model 2  [filtered and excluding outliers]
+
+$$\hat{y_{i}} = 11.292064 + 9.107418 × Mean Height (m)$$
+
+#### 1.2.6 Confidence Intervals Simple Linear Model 2 [filtered and excluding outliers]
+```{r chunk_name12121212,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Compute confidence intervals
+conf_intervals26 <- confint(lm33, 'Mean Height (m)', level = 0.95)
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(conf_intervals26, format = "markdown")
+
+```
+
+#### 2.2.69 Assumptions of Simple Linear Model 2 [filtered and excluding outliers] [Below]
+
+## 2.2.7 Plot Simple Linear Model 2  [filtered and excluding outliers]
+```{r chunk_name131234567890,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+plot(lm33)
+```
+
+
+
+#### 2.2.8 Non-constant Error Variance Test  [filtered and excluding outliers]
+```{r chunk_name145959454559, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+ncvTest(lm33)
+bptest(lm33, studentize = F)
+bptest(lm33, studentize = T)
+```
+
+#### 2.2.9 Cook's Model Linear Model 2  [filtered and excluding outliers]
+```{r chunk_name140140140, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(broom)
+library(ggplot2)
+library(kableExtra)
+
+model.diag.metrics23001 <- augment(lm33) 
+
+top_201_lm33 <- model.diag.metrics23001 %>%
+  top_n(3, wt = .cooksd)  
+
+kable(top_201_lm33, format = "markdown")
+kable(model.diag.metrics23001, format = "markdown")
+
+```
+
+#### 2.2.10 Durbin Watson Test Linear Model 2 [filtered and excluding outliers]
+```{r chunk_name1515151516, warning=FALSE, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+durbinWatsonTest(lm33)
+```
+
+
+#### 2.2.11 Shapiro Wilks Test Linear Model 2 [filtered and excluding outliers]
+```{r chunk_name9090909090911119090, warning=FALSE,  warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## null is that the residuals are normally distributed --> residuals is the median distance of the point is from the regression line
+residuals_lm33 <- residuals(lm33)
+
+# Performing Shapiro-Wilk test for normality
+shapiro.test(residuals_lm33)
+```
+
+
+
+#### 2.11.12 Report Results Simple Linear Model 2  [filtered and excluding outliers]
+
+For Linear Model 2, outliers identified in Linear Model 1 were removed, as seen in Figure 1.2.4. Linear Model 2, constructed without outliers, is depicted in Figure 1.2.49, revealing a predicted response variable equation with an intercept of 11.29 and a slope of 9.09 for mean height. Confidence intervals at 97.5% and 2.5% remain consistent.
+
+Plots for Linear Model 2 exhibit a relatively straighter line for residuals vs fitted (Figure 2.2.7), indicating a need for logarithmic transformation due to slight variation. Figure 2 (2.2.7) displays an "S" shape, suggesting logarithmic transformation is required. Similarly, Plot 3 depicts characteristics akin to Plot 1, signifying the need for data transformation. Plot 4 underscores the necessity of data logging.
+
+The Shapiro-Wilks test (2.2.11) demonstrates an increased p-value (p = 0.4368), suggesting a failure to reject the assumption of normal distribution in the data (assuming normality), though further improvement can be achieved through data logging.
+
+The non-constant variance test (2.2.8) yields a high p-value (p = 0.46), indicating insufficient evidence to reject the assumption of constant error variance violation. The Cook's model (Figure 2.2.9) identifies additional residuals, suggesting that the removal of outliers may have contributed to the increased p-value in the Shapiro test. However, despite these adjustments, the data still fails regression assumptions based on linear plots, warranting further data transformation through logging for potential improvement.
+
+
+
+
+
+
+
+
+#### 2.3 [Simple Linear Model 3]  [Log transformed with filtered and excluded outliers]
+
+
+#### 2.3.1 Log transforming tdat to make simple linear model 3 [Log transformed with filtered and excluded outliers]
+```{r  chunk_name 221211212123232, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## making new column then putting log of the mean height inside
+tdat2$log_height_question_2pt1 <- log(tdat2$`Mean Height (m)`)
+## making new column
+tdat2$log_density_question_2_pt1 <- log(tdat2$`Mean Wood Density (g m^3)`)
+
+```
+
+
+
+#### 2.3.2 Making Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name 2213212141212, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+lm44 <- lm(`log_height_question_2pt1` ~ `log_density_question_2_pt1`, data = tdat2)
+
+
+# Generate summary table
+sum_lm44 <- summary(lm44)
+
+# Extract coefficients table
+coefficients_table309 <- sum_lm44$coefficients
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(coefficients_table309, format = "markdown")
+```
+
+
+
+
+#### 2.3.3 Predicted Response Variable Linear Model 3  [Log transformed with filtered and excluded outliers]
+
+$$\hat{y_{i}} = 2.9761525 + 0.3121518	 × Mean Height (m)$$
+
+
+#### 2.3.4 Confidence Intervals Simple Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name1423232234423, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Compute confidence intervals
+conf_intervals10001 <- confint(lm44, 'log_height_question_2pt1', level = 0.95)
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(conf_intervals10001, format = "markdown")
+
+```
+####  Assumptions of Linear model 3: [Log transformed with filtered and excluded outliers]
+
+## 2.3.5 Plot linear model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name696969102, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+plot(lm44)
+```
+
+## 2.3.6 Non-constant Error Variance Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name1169694, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+library(lmtest)
+ncvTest(lm44)
+bptest(lm44, studentize = F)
+bptest(lm44, studentize = T)
+```
+
+
+## 2.3.7 Cook's Model: Identifying Points of Leverage Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name12539898989893, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(broom)
+library(ggplot2)
+library(kableExtra)
+model.diag.metrics1069123 <- augment(lm44) 
+
+top_101c <- model.diag.metrics1069123 %>%
+  top_n(3, wt = .cooksd)  
+
+kable(top_101c, format = "markdown")
+kable(model.diag.metrics1069123, format = "markdown")
+
+```
+
+#### 2.3.8 Durbin Watson Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name2222335321225, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+durbinWatsonTest(lm44)
+```
+
+#### 2.3.9 Shapiro Wilks Test Linear Model 3 [Log transformed with filtered and excluded outliers]
+```{r chunk_name1309834768, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## null is that the residuals are normally distributed --> residuals is the median distance of the point is from the regression line
+residuals_lm44 <- residuals(lm44)
+
+# Performing Shapiro-Wilk test for normality
+shapiro.test(residuals_lm44)
+```
+
+
+#### 2.9.99 Report Results Linear Model 3:
+In Linear Model 3, the dataset was logged to remove outliers. Figure 2.3.2 illustrates the construction of Linear Model 3, revealing a predicted response variable equation with an intercept of 2.97 and a slope of 0.31 for mean height, indicating normalized data. Confidence intervals remain consistent at 97.5% and 2.5%. Plots for Linear Model 3 depict significantly straighter lines for residuals vs fitted (2.3.5), indicating successful logarithmic transformation. Plot 2 (Figure 2.3.5) demonstrates a pronounced straight shape fitting to the line, while Plot 3 resembles the pattern observed in Plot 1. Plot 4 showcases a considerably straighter line, indicating positive progress. The Shapiro-Wilks test (2.3.9) yields an increased p-value (p = 0.174), suggesting a failure to reject the assumption of normal distribution, though further improvement is sought. The non-constant variance test (2.3.6) maintains a high p-value (p = 0.14), indicating insufficient evidence to reject the assumption of constant error variance violation. The Cook's model (Figure 2.3.7) identifies additional residuals, indicating potential improvements through further exploration of logged data with outliers. Further testing is warranted to ascertain the impact of logged data with outliers on model performance.
+
+
+
+
+
+#### 3.0 [Simple Linear Model 4] [Logged comparison with outliers for comparisson]
+
+#### 3.1.1 log transforming original tdat data frame [Logged comparison with outliers for comparisson]
+```{r chunk_name1298098701, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+tdat$log_height_originaltdat_question_2 <- log(tdat$`Mean Height (m)`)
+# Assuming tdat$log_density_originaltdat_question_2_1 contains the logged data
+tdat$log_density_originaltdat_question_2_1 <- log(tdat$`Mean Wood Density (g m^3)`)
+```
+## 3.1.2 Making simple linear model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name128903, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+lm55_with_outliers <- lm(`log_height_originaltdat_question_2` ~ `log_density_originaltdat_question_2_1`, data = tdat)
+
+
+# Generate summary table
+sum_lm55_with_outliers<- summary(lm55_with_outliers)
+
+# Extract coefficients table
+coefficients_table304 <- sum_lm55_with_outliers$coefficients
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(coefficients_table304, format = "markdown")
+```
+#### 3.3.4 Predicted Response Variable Linear Model 4 [Logged comparison with outliers for comparisson]
+
+$$\hat{y_{i}} = 2.9947200 -0.3357901		 × Mean Height (m)$$
+
+
+#### 3.3.4 Confidence Intervals Simple Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name101223,warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+# Compute confidence intervals
+conf_intervals10089 <- confint(lm55_with_outliers, 'Mean height (m)', level = 0.95)
+
+# Load required library
+library(knitr)
+
+# Create a pretty table using kable
+kable(conf_intervals10089, format = "markdown")
+
+```
+
+#### Assumptions of Linear Model 4 [Logged comparison with outliers for comparisson]
+
+## 3.3.5 Plot Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunkname6886612886868, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+plot(lm55_with_outliers)
+```
+
+#### 3.3.6 Non-constant Error Variance Test Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name1098766787614, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+library(lmtest)
+ncvTest(lm55_with_outliers)
+bptest(lm55_with_outliers, studentize = F)
+bptest(lm55_with_outliers, studentize = T)
+```
+
+
+
+
+
+#### 3.3.7 Cook's Model: Identifying Points of Leverage [Logged comparison with outliers for comparisson]
+```{r chunk_name99956789, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(broom)
+library(ggplot2)
+library(kableExtra)
+model.diag.metrics55c <- augment(lm55_with_outliers) 
+
+top_55c <- model.diag.metrics55c %>%
+  top_n(3, wt = .cooksd)  
+
+kable(top_55c, format = "markdown")
+kable(model.diag.metrics55c, format = "markdown")
+
+```
+
+
+#### 3.3.8 Durbin Watson Test Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name234545, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+library(car)
+library(lmtest)
+library(kableExtra)
+
+durbinWatsonTest(lm55_with_outliers)
+
+```
+#### 3.3.9 Shapiro Wilks Test Linear Model 4 [Logged comparison with outliers for comparisson]
+```{r chunk_name95945595, warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE}
+## null is that the residuals are normally distributed --> residuals is the median distance of the point is from the regression line
+residuals_lm55_with_outliers <- residuals(lm55_with_outliers)
+
+# Performing Shapiro-Wilk test for normality
+shapiro.test(residuals_lm55_with_outliers)
+```
+
+
+
+#### 3.3.11 Report Results Simple Linear Model 4 [Logged comparison with outliers for comparisson]
+
+In Linear Model 4, the dataset was logged for comparison with outliers. Figure 3.1.2 illustrates the construction of Linear Model 4, revealing a predicted response variable equation with an intercept of 2.9 and a slope of 0.335 for mean height, indicative of normalized data. Confidence intervals remain consistent at 97.5% and 2.5%. Plots for Linear Model 4 depict a straighter line compared to the unlogged data, albeit still exhibiting some distortion due to outliers (3.3.5). Plot 2 (Figure 3.3.5) shows a slightly improved shape, suggesting that logarithmic transformation is effective, yet outliers continue to disrupt data integrity. Plot 3 mirrors the findings of Plot 1, while Plot 4 showcases a notably straighter line. The Shapiro-Wilks test (2.3.9) yields an increased p-value (p = 0.34), indicating a failure to reject the assumption of normal distribution. However, the lower p-value compared to the logged data without outliers suggests that outliers significantly impact linear correlation. The non-constant variance test (3.3.6) maintains a high p-value (p = 0.84), indicating insufficient evidence to reject the assumption of constant error variance violation. While the Cook's model (Figure 3.3.7) identifies additional residuals, the plots for Linear Model 4 appear non-linear compared to those of Linear Model 3, affirming that the logged data without outliers is the preferred choice for correlation modeling.
+
+
+
+
