@@ -1,0 +1,534 @@
+---
+title: "Week_6_Problem_Set"
+author: "Dan Crownover"
+date: "2023-02-22"
+output:
+  html_document: default
+---
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set( warning=FALSE, fig.show='only', echo=FALSE, results='asis', message=FALSE)
+```
+
+
+Data:
+House sparrows were found on the ground after a severe winter storm in 1898, some of which survived and others of which perished. We are going to analyze the explanatory variables that determine whether a sparrow survived or not. 
+
+Variables include: 
+bird weight, WT
+age, AG
+total length, TL
+alar extent, AE 
+length of beak and head, BH, 
+length of humerus, HL, 
+length of femur, FL, 
+length of tibio-tarsus, TT, 
+width of skull, SK, 
+length of keel of sternum, KL.
+
+```{r}
+sdat <- read.csv("/Users/daniel/Downloads/BIO 591 Coding Files/Problem Set/Problem Set 6/sdat.csv")
+```
+
+```{r}
+library(ggplot2)
+library(interactions)
+library(car)
+library(lmtest)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(rmarkdown)
+library(GGally)
+library(gvlma)
+library(rstatix)
+library(tidyverse)
+library(dplyr)    # a set of packages for data manipulation and management
+library(caret)    # package for classification and regression, Machine Learning
+library(lattice) 
+library(lmtest)   # lmtest contains a bunch of linear model tests, as well as the likelihood ratio test that we will use here
+
+
+theme_Publication <- function(base_size=10, base_family="Arial") {
+  
+  (theme_foundation(base_size=base_size, base_family=base_family)
+   + theme(plot.title = element_text(hjust = 0.5),
+           text = element_text(),
+           panel.background = element_rect(colour = NA),
+           plot.background = element_rect(colour = NA),
+           panel.border = element_rect(colour = NA),
+           axis.title = element_text(size = rel(1)),
+           axis.title.y = element_text(angle=90,vjust =2),
+           axis.text = element_text(), 
+           axis.line = element_line(colour="black"),
+           axis.ticks = element_line(),
+           panel.grid.major = element_line(colour="#f0f0f0"),
+           panel.grid.minor = element_blank(),
+           legend.key = element_rect(colour = NA),
+           legend.position = "right",
+           legend.title = element_text(face="italic"),
+           strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0")
+   ))
+  
+}
+
+```
+
+
+
+Question 1: 
+
+1.1 Fit a simple logistic regression model with just bird weight as the x variable and survival as the y variable.
+
+1.2  Make a boxplot comparing survival across different weights (2.5) 
+
+1.3 Interpret the coefficients (on both the logit scale and the odds ratio) (5)
+For every unit increase in the predictor variable WT, the dependent variable increases by approximately 0.654 unit
+
+1.4 Report the the Wald confidence interval for b1 (calculated by hand and using confint) (2.5)
+
+We fitted a logistic model (estimated using ML) to predict Status with WT (formula: Status ~ WT). The model's
+explanatory power is weak (Tjur's R2 = 0.07). The model's intercept, corresponding to WT = 0, is at 11.32 (95%
+CI [2.94, 20.76], p = 0.012). Within this model:
+
+  - The effect of WT is statistically significant and negative (beta = -0.42, 95% CI [-0.79, -0.10], p = 0.015;
+Std. beta = -0.60, 95% CI [-1.12, -0.14])
+
+Standardized parameters were obtained by fitting the model on a standardized version of the dataset. 95%
+Confidence Intervals (CIs) and p-values were computed using a Wald z-distribution approximation.
+
+1.5. Report and discuss the results from the likelihood ratio test (5)
+The LR chi-square test indicates a significant association between the predictor variable WT and the outcome variable, with a chi-square value of 6.7595 and 1 degree of freedom (DF), yielding a p-value of 0.009325, denoted by **.
+We reject the model with null that both of the models have the same liklihood (which model fits better) that data are equal, so now we can assume that the model using weight are better than other.
+
+
+
+
+
+1.6 Check the assumptions of the model (5)
+The Maximum Likelihood Estimation (MLE) of lambda is 4.6009. The Score Statistic (t) is -0.3006 with a corresponding p-value of 0.7644, indicating no significant deviation from the null hypothesis. the standard residuals where 87 and false. all of these passed the assumptions and we can continue with q 2
+
+
+
+Question 2: 
+2.1. Fit the full model using all of the variables. Decide whether to include or exclude predictor variables based on     multicollinearity (2.5)
+Based on multicolinearity and results taken from the plots and box and tildwell test(this is Dan Crownover, kyle you mentioned to I and claudia that the box and tildwell test wasn't working), however we decided to exclude FL KL and TT because they did not pass assumptions
+, 
+
+2.2 Check the assumptions of linearity. Decide whether or not to include or exclude predictor variables based on          linearity. (2.5)
+See question 2.2
+
+2.3 Find the best combination of variables for predicting survival using cross validation. Describe what this method is doing (5) 
+    - Interpret the coefficients of this model. (5)
+Intercept (Intercept): The intercept represents the predicted log-odds of the response variable when all predictor variables are zero. In this case, the intercept is 11.3201 with a standard error of 4.5053 and a z-value of 2.513. The intercept is statistically significant (p-value = 0.012), suggesting that the log-odds of the response variable being in the 'Survived' category (compared to 'Perished') is significantly different from zero when WT is zero.
+WT: The coefficient for WT is -0.4244, with a standard error of 0.1738 and a z-value of -2.441. This coefficient indicates the change in the log-odds of the response variable for a one-unit increase in the WT predictor variable. The negative sign indicates that as WT increases, the log-odds of the response variable being in the 'Survived' category decrease. The coefficient is statistically significant (p-value = 0.0146), suggesting that WT is a significant predictor of the response variable.
+In summary, the model suggests that both the intercept and WT are significant predictors of the response variable Status. As WT increases, the likelihood of survival decreases, holding other variables constant.
+
+    
+2.4. Train (fit) your final model selected via cross validation on 70% of the data and test (predict) it on 30% it hasn't seen yet (5)
+    - Using a cutoff of .6, report the confusion matrix for your model. Interpret Accuracy, Sensitivity and Specificity in words. (5)
+    The confusion matrix provides a comprehensive view of the model's classification performance. Accuracy reflects the overall proportion of correct predictions, demonstrating the model's effectiveness in both positive and negative classifications. Sensitivity reveals the model's ability to correctly identify positive instances, while specificity gauges its proficiency in accurately classifying negative instances, offering insights into its robustness across different classes. The confusion matrix illustrates the model's classification performance, revealing an accuracy of 78.16%, with a 95% confidence interval between 68.02% and 86.31%. The model demonstrates a sensitivity of 78.43%, indicating its ability to correctly identify positive instances, and a specificity of 77.78%, reflecting its accuracy in identifying negative instances. These metrics collectively suggest the model's effectiveness in distinguishing between survival outcomes and its overall performance across different classes.
+    
+  - Plot the ROC of your model (from the 70%, 30% split) and report out the AUC on the plot. (5)
+    
+    
+    
+
+#### 1.2 Load and examine data 
+```{r}
+
+sdat$Status<-as.factor(sdat$Status) 
+
+levels(sdat$Status)
+
+```
+
+
+
+#### 1.2 Box Plot of Data Sets
+
+```{r}
+ggplot(sdat, aes(x = Status, y = WT)) +
+  geom_boxplot()
+```
+#### 1.1 simple linear regression 
+```{r}
+
+# Convert 'Status' column to 0 and 1
+
+# Fit logistic regression model
+simp_logit <- glm(Status ~ WT, data = sdat, family = "binomial"(link = logit))
+
+summary(simp_logit)
+
+
+
+```
+
+
+#### 1.3 Example Coeficients
+```{r}
+exp(coef(simp_logit))
+```
+
+
+
+#### 1.4 Wald Confidence Interval
+```{r}
+simp_logit <- glm(Status ~ WT, data = sdat, family = "binomial"(link = logit))
+summary(simp_logit)
+
+wald1 <- confint(simp_logit, level = .95) 
+library(report)
+report(simp_logit)
+
+```
+
+
+#### 1.5 Anova
+```{r}
+Anova(simp_logit,type="II",test="LR")
+```
+
+
+
+
+####  1.6 Plot residuals
+```{r}
+plot(simp_logit, which=1)
+```
+
+#### 1.6 Tildwell Test
+```{r}
+
+boxTidwell(as.numeric(Status) ~ WT, data = sdat)
+
+```
+
+
+
+#### 1.6 Cooks Distance Assumptions
+```{r, echo=FALSE, include=FALSE, results='hide'}
+cooks.distance(simp_logit) > 3*mean(cooks.distance(simp_logit))
+residuals <- cooks.distance(simp_logit) > 3 * mean(cooks.distance(simp_logit))
+# Use logical indexing to filter out the true values
+true_residuals <- cooks.distance(simp_logit)[residuals]
+
+true_residuals
+```
+
+
+
+#### 1.6 Standard Residuals
+```{r}
+
+std.resid<-rstandard(simp_logit)
+z<-abs(std.resid)>3
+table(z)[TRUE]
+
+```
+
+
+
+#### Question 2
+
+#### 2.1 Converting Status a Factor
+```{r, echo=FALSE, include=FALSE, results='hide'}
+sdat$status<-as.factor(sdat$Status)
+```
+
+bird weight, WT
+age, AG
+total length, TL
+alar extent, AE 
+length of beak and head, BH, 
+length of humerus, HL, 
+length of femur, FL, 
+length of tibio-tarsus, TT, 
+width of skull, SK, 
+length of keel of sternum, KL.
+
+
+
+
+#### 2.1 Developing Model
+```{r}
+library(kableExtra)
+
+# Fit the glm model
+mod2 <- glm(Status ~ WT + AG + TL + AE + BH + HL + FL + TT + SK + KL, family = binomial(link = logit), data = sdat)
+
+# Get summary of the model
+summary_mod2 <- summary(mod2)
+
+# Convert coefficients to a data frame
+coefficients_df <- as.data.frame(summary_mod2$coefficients)
+
+# Pretty table with kable
+kable(coefficients_df, caption = "Summary of mod2 glm Model", align = "c") %>%
+  kable_styling(full_width = FALSE)
+
+mod2 <- glm(Status ~ WT + AG + TL + AE + BH + HL + FL + TT + SK + KL, family="binomial"(link=logit), data = sdat)
+summary(mod2)
+```
+## 2.1 VIF model
+```{r}
+vifmod2<- vif(mod2)
+kable(vifmod2)
+```
+
+
+
+#### 2.2 Linearity
+```{r}
+library(dplyr)
+
+
+full_model <- glm(Status ~ WT + AG + TL + AE + BH + HL + FL + TT + SK + KL, data = sdat, family = "binomial"(link = logit))
+
+summary(full_model)
+
+
+mydata <- sdat %>% 
+  mutate(logit = predict(full_model)) 
+
+
+mydata <- mydata %>% dplyr::select(logit,WT, AG, TL, AE, BH, HL, FL, TT, SK, KL)
+
+mydata <- mydata %>%
+  gather(key = "predictors", value = "predictor.value", -logit)
+
+
+#Create the Scatter Plots:
+ggplot(mydata, aes(logit, predictor.value))+
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "loess") + 
+  theme_bw() + 
+  facet_wrap(~predictors, scales = "free_y")
+```
+
+#### 2.2 Box Tidwell: are linear assumptions met
+```{r}
+
+boxTidwell(as.numeric(Status) ~ AG, data = sdat)
+boxTidwell(as.numeric(Status) ~ TL , data = sdat)
+boxTidwell(as.numeric(Status) ~ WT , data = sdat)
+boxTidwell(as.numeric(Status) ~ BH, data = sdat)
+boxTidwell(as.numeric(Status) ~ FL, data = sdat)
+boxTidwell(as.numeric(Status) ~ SK, data = sdat)
+boxTidwell(as.numeric(Status) ~ HL, data = sdat)
+boxTidwell(as.numeric(Status) ~ KL, data = sdat)
+## not  violated
+
+## FL KL and TT did not pass assumptions
+
+
+```
+#### 2.2 Removing Values
+```{r}
+# Fitting the model
+full_model2 <- glm(Status ~ WT + AG + TL + AE + BH + HL + SK, data = sdat, family = binomial(link = "logit"))
+
+# Summary of the model
+summary(full_model2)
+
+# Adding predicted values to the dataset
+mydata2 <- sdat %>%
+  mutate(logit = predict(full_model2))
+
+# Selecting necessary columns
+mydata2 <- mydata2 %>%
+  select(logit, WT, AG, TL, AE, BH, HL, SK)
+
+# Reshaping the data using gather
+mydata2 <- mydata2 %>%
+  gather(key = "predictors", value = "predictor.value", -logit)
+ggplot(mydata2, aes(logit, predictor.value))+
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "loess") + 
+  theme_bw() + 
+  facet_wrap(~predictors, scales = "free_y")
+
+```
+
+#### 2.3 Cross Validation: 
+
+```{r, echo=FALSE, include=FALSE, results='hide'}
+library(gtools)
+pastePerm<- function(row, names){
+  keep<- which(row==1)
+  if(length(keep)==0){
+    return('1')
+  }else{
+    return(paste(names[keep],collapse='+'))
+  }
+}
+my_sqrt <- function(var1){
+  sqrt(var1)
+}
+
+dredgeform<- function(pred, covars, alwaysIn=''){
+  p<- length(covars)
+  perm.tab<- permutations(2, p, v=c(0,1), repeats.allowed=T)
+  myforms<- NULL
+  for(j in 1:nrow(perm.tab)){
+    myforms[j]<- pastePerm(perm.tab[j,], covars)
+  }
+  myforms<- paste0(pred, '~',myforms)
+  return(myforms)
+}
+
+allformulas<- dredgeform(pred = "Status", covars = c("WT", "AG", "TL", "AE", "BH", "HL", "SK"))
+
+
+```
+
+```{r, echo=FALSE, include=FALSE, results='hide'}
+
+set.seed(123)
+compare_var <- as.data.frame(matrix(ncol = 2, nrow = 0))
+colnames(compare_var) <- c("formula", "AIC")
+
+for ( i in 1:length(allformulas)) {
+
+model <- glm(as.formula(allformulas[i]), data = sdat, family = "binomial"(link= logit))
+
+# Summarize the results
+compare_var[i, 1] <- allformulas[i]
+compare_var[i, 2] <- AIC(model)
+}
+
+compare_var %>% arrange(AIC)
+
+```
+
+#### AUC
+```{r, echo=FALSE, include=FALSE, results='hide'}
+
+library(stats)
+
+set.seed(123)
+library(caret)
+compare_var <- as.data.frame(matrix(ncol = 4, nrow = 0))
+colnames(compare_var) <- c("formula", "AUC", "sensitivity", "specificity")
+
+for ( i in 2:length(allformulas)) {
+  
+train.control <- trainControl(method = "repeatedcv", number = 3, repeats = 10, 
+                     summaryFunction=twoClassSummary, 
+                     classProbs=T,
+                     savePredictions = T)
+
+# Train the full model
+model <- train(as.formula(allformulas[i]), data = sdat, method = "glm", family = "binomial", trControl = train.control, metric = "ROC")
+
+# Summarize the results
+compare_var[i, 1] <- allformulas[i]
+compare_var[i, 2] <- model$results$ROC
+compare_var[i, 3] <- model$results$Sens
+compare_var[i, 4] <- model$results$Spec
+
+
+}
+
+compare_var %>% arrange(-AUC)
+```
+
+```{r}
+library(stats)
+library(pROC)
+library(caret)  # Load the caret package for createDataPartition
+sdat1 <- sdat
+sdat1$Status <- ifelse(sdat1$Status== "Survived", 1,0)
+set.seed(123)
+
+# Assuming 'sdat dat' is your dataset
+training.samples <- sdat1$Status %>%
+  createDataPartition(p = 0.7, list = FALSE)
+
+train.data <- sdat1[training.samples, ]
+test.data <- sdat1[-training.samples, ]
+
+glm_full <- glm(Status~WT+TL+AE+HL, data = train.data,)
+# Make predictions and compute the R2, RMSE and MAE
+predictions_full <- glm_full %>% predict(test.data)
+data.frame( R2 = R2(predictions_full, test.data$Status),
+            RMSE = RMSE(predictions_full, test.data$Status),
+            MAE = MAE(predictions_full, test.data$Status))
+
+library(kableExtra)
+
+# Create a data frame with the values
+results <- data.frame(
+  R2 = 0.2324016,
+  RMSE = 0.4460349,
+  MAE = 0.3872052
+)
+
+# Pretty table with kable
+kable(results, caption = "Model Evaluation Metrics", align = "c") %>%
+  kable_styling(full_width = FALSE)
+
+```
+
+
+
+#### 2.4
+```{r}
+
+best_model <- glm(Status~WT+TL+AE+HL, data = sdat1)
+
+```
+
+#### 2.3 Interpreting the coeficcients of the Best model question 2.3 part 2
+```{r}
+exp(coef(best_model))
+```
+
+
+#### 2.4 Plot ROC curve
+```{r}
+
+# Assuming 'sdat' is your dataset and 'simp_logit' is your final logistic regression model
+
+
+
+# Predict probabilities using the logistic regression model
+test_prob <- predict(glm_full, newdata = sdat1, type = "response")
+
+# Create ROC curve using the formula method
+test_roc_formula <- roc(sdat1$Status, test_prob, plot = TRUE, print.auc = TRUE)
+
+
+
+```
+####  2.4 Cofusion Matrix
+```{r}
+### Assuming 'test_pred_50' contains the predicted values
+
+
+get_logistic_pred = function(mod, data, res = "y", pos = 1, neg = 0, cut = 0.6) {
+  probs = predict(mod, newdata = data, type = "response")
+  ifelse(probs > cut, pos, neg)
+}
+
+
+test_pred_50 = get_logistic_pred(best_model, data = sdat1, res = "default", 
+                                 pos = 1, neg = 0, cut = 0.6)
+
+# Create the confusion matrix
+test_tab_50 <- table(predicted = test_pred_50, actual = sdat1$Status)
+
+# Calculate the confusion matrix
+test_con_mat_50 <- confusionMatrix(as.factor(test_pred_50), as.factor(sdat1$Status), positive = "1")
+
+# Extract metrics
+metrics <- rbind(
+  c(test_con_mat_50$overall["Accuracy"], 
+    test_con_mat_50$byClass["Sensitivity"], 
+    test_con_mat_50$byClass["Specificity"])
+)
+
+test_con_mat_50
+
+```
